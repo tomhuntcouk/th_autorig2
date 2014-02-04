@@ -3,13 +3,13 @@ import pymel.all as pm
 # import globalvars
 # from controls import Control
 from chain_basic import Jointchain
-from skeleton import RigJoint
+# from skeleton import RigJoint
 # from rig_basic import BaseBindrig
 # from rig_ikfk import *
-from vclass import MyVirtualNode
+import vclass
 
 """
-p = '/Users/Tom/Developement'
+p = '/Users/Tom/Development'
 
 import sys
 import pymel.core as pm
@@ -36,7 +36,10 @@ th_autorig.test.main()
 
 def main() :
 
-	l = 'file -f -options "v=0;"  -esn false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Developement/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
+	# vclass.testJoint()
+	# return
+
+	l = 'file -f -options "v=0;"  -esn false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
 	pm.mel.eval( l )
 
 	# print pm.api.MFnDependencyNode
@@ -52,6 +55,10 @@ def main() :
 		pm.PyNode( 'leftUpperArm_1_j' ), 
 		pm.PyNode( 'leftWrist_j' )
 	)
+
+	l_arm.orient_jointchain()
+	l_arm.split_rigjoint( 0, 3 )
+	# print l_arm.rigjoints
 
 	# print l_arm.children(), l_arm.parent()
 

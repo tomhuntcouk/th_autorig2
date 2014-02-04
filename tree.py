@@ -11,6 +11,7 @@ jointchain <--- bind chain
 
 """
 
+
 class TreeNode( object ) :
 	def __init__( self, _parent=None, _value=None ) :
 		self.__value = _value
