@@ -29,9 +29,7 @@ class Jointchain( TreeNode ) :
 		ret = []
 		for joint in _jointlist :				
 			if( RigJoint.convert_to_virtual( joint ) ) :
-			# if True :
-				print joint.name()
-				bone = RigJoint( joint )
+				bone = pm.PyNode( joint )
 				self.minorbones[ bone ] = []
 				ret.append( bone )
  		

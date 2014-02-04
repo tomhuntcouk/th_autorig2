@@ -6,6 +6,7 @@ from chain_basic import Jointchain
 from skeleton import RigJoint
 # from rig_basic import BaseBindrig
 # from rig_ikfk import *
+from vclass import MyVirtualNode
 
 """
 p = '/Users/Tom/Developement'
@@ -38,10 +39,13 @@ def main() :
 	l = 'file -f -options "v=0;"  -esn false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Developement/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
 	pm.mel.eval( l )
 
-	print pm.api.MFnDependencyNode
+	# print pm.api.MFnDependencyNode
 
-	# r = RigJoint( name="yay" )
-	# print type(RigJoint( 'pelvis_j' ))
+	# print type(RigJoint( name="yay" ))
+	
+	# print type(pm.PyNode( 'pelvis_j' ))
+
+	# print MyVirtualNode(n='wow')
 
 	l_arm = Jointchain.from_startend( 
 		'left_arm',
