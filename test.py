@@ -1,12 +1,12 @@
 import pymel.all as pm
-
+import pprint
 # import globalvars
 # from controls import Control
 from chain_basic import Jointchain
+from rig_basic import *
 # from skeleton import RigJoint
 # from rig_basic import BaseBindrig
 # from rig_ikfk import *
-import vclass
 
 """
 p = '/Users/Tom/Development'
@@ -36,12 +36,13 @@ th_autorig.test.main()
 
 def main() :
 
+	pp = pprint.PrettyPrinter( indent=4 )
+
 	# vclass.testJoint()
 	# return
 
 	l = 'file -f -options "v=0;"  -esn false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
 	pm.mel.eval( l )
-
 	# print pm.api.MFnDependencyNode
 
 	# print type(RigJoint( name="yay" ))
@@ -56,9 +57,22 @@ def main() :
 		pm.PyNode( 'leftWrist_j' )
 	)
 
-	l_arm.orient_jointchain()
-	l_arm.split_rigjoint( 0, 3 )
-	# print l_arm.rigjoints
+	# l_arm.orient_jointchain()
+	# l_arm.split_rigjoint( 0, 2 )
+	
+	# l_arm.duplicate_jointchain(  )
+
+	# l_arm_rig = BasicRig( l_arm )
+
+	# print l_arm.tree_parent()
+
+	l_arm_rig = BindRig( l_arm )
+	l_arm.add_child( l_arm_rig )
+
+	for c in l_arm_rig.tree_children() :
+		print c
+
+
 
 	# print l_arm.children(), l_arm.parent()
 

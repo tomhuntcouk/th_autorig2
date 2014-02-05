@@ -53,8 +53,8 @@ def add_set_attr( _obj, _attr, _value ) :
 
 def renumber_from_name( _name, _number ) :
 	d = settings.name_string_delimeter
-	namesplit = _name.rsplit( d, 1 )[0]
-	return '%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
+	namesplit = _name.rsplit( d, 1 )
+	return '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
 
 #########################################################
 # math
@@ -69,11 +69,17 @@ def lerp( p1, p2, t ) :
 			for i in [ 'x', 'y', 'z' ] :				
 				setattr( outVector, i, lerp( getattr( p1, i ), getattr( p2, i ), t ) )
 			return outVector
+		elif( type( p1 ) == list ) :
+			# calculate list lerp
+			outList = [ 0, 0, 0 ]
+			for i, v in enumerate( p1 ) :
+				outList[i] = lerp( p1[i], p2[i], t )
+			return outList
 		elif( type( p1 ) == float  ) :
 			# calculate float lerp
 			return p1 + ( p2 - p1 ) * t		
 		else :
-			err( 'inputs for lerp ( %s %s ) not vector or float' % ( p1, p2 ) )
+			err( 'inputs for lerp ( %s, %s ) not vector, list or float' % ( p1, p2 ) )
 			return False
 	else :
 		err( 'inputs for lerp ( %s %s ) not of same type' % ( p1, p2 ) )

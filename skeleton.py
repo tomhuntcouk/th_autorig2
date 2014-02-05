@@ -9,6 +9,12 @@ to fix __apicls__ error i had to add __apicls__ to validSpecialAttrs in
 pm.factories.VirtualClassManager.register()
 
 ideally this should be fixed without directly modifying core
+
+
+the pymel shipped with Maya 2014 errors when trying to access any methods on any class inheriting from MFnDependencyNode
+clone the PyMel Github repo to resolve the problem
+
+
 """
 
 # print pm.factories.VirtualClassManager.register
@@ -27,7 +33,6 @@ class BaseJoint( pm.Joint ) :
 
 	@classmethod
 	def _isVirtual( cls, obj, name ) :
-		print '_____', obj, name
 		fn = pm.api.MFnDependencyNode( obj )
 		try :
 			if( fn.hasAttribute( settings.attrname ) ) :
@@ -96,9 +101,14 @@ class RigJoint( BaseJoint ) :
 		pm.select( None )
 
 		# get position of self and child
-		print self.getAttr( 'translate' )
 		selfpos = self.getTranslation( space='world' )
 		childpos = child.getTranslation( space='world' )
+		# selfpos = pm.xform( self, q=True, translation=True, worldSpace=True )
+		# childpos = pm.xform( child, q=True, translation=True, worldSpace=True )
+
+		# first unparent self and store parent
+		parent = self.getParent()
+		self.setParent( None )
 
 		# create joints by lerping between selfpos and childpos
 		ret = []
@@ -106,13 +116,17 @@ class RigJoint( BaseJoint ) :
 		for i in range( 1, _numsplits + 1 ) :
 			t = i * ( 1.0 / ( _numsplits + 1 ) )
 			newjointpos = utils.lerp( selfpos, childpos, t )
-			newjoint = RigJoint( n=utils.renumber_from_name( self.name(), i ) )
+			
+			pm.select( None )
+			newjoint = lastjoint.duplicate( n=utils.renumber_from_name( self.name(), i ) )[0]
 			newjoint.setTranslation( newjointpos, space='world' )
+			
 			ret.append( newjoint )
 			newjoint.setParent( lastjoint )
 			lastjoint = newjoint
 		child.setParent( lastjoint )
 
+		self.setParent( parent )
 		pm.select( self )
 		return ret
 

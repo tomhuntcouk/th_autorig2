@@ -1,10 +1,10 @@
 import pymel.all as pm
 
+import copy
+
 from tree import TreeNode
 from skeleton import RigJoint
-# from skeleton import convert_to_virtual
-# import skeleton
-import utils
+import utils, settings
 
 
 class Jointchain( TreeNode ) :
@@ -44,6 +44,15 @@ class Jointchain( TreeNode ) :
  		rigjoint = self.rigjoints[ _pos ]
  		self.minorrigjoints[ rigjoint ] = rigjoint.split( _numsplits )
 
+ 	def duplicate_jointchain( self ) :
+ 		# make a deep copy of self
+		# loop through bones and replace bone with bone.duplicate
+		# loop through minorbones and replace minorbone with bone.duplicate	
+
+		dupjointchain = copy.deepcopy( self )
+		for i, rigjoint in enumerate( dupjointchain.rigjoints ) :
+			# duprigjoint = rigjoint.duplicate(  )
+			pass
 
 
 	############################################################
