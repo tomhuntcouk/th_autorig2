@@ -67,10 +67,10 @@ def main() :
 	# print l_arm.tree_parent()
 
 	l_arm_rig = BindRig( l_arm )
-	l_arm.add_child( l_arm_rig )
 
 	for c in l_arm_rig.tree_children() :
 		print c
+		# pass
 
 
 

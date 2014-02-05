@@ -20,10 +20,11 @@ class TreeNode( object ) :
 
 	def add_child( self, _value ) :		
 		child = _value
-		print '---',_value, _value.__class__ issubclass( TreeNode, _value.__class__ )
+		print _value
+		# print '---',_value, _value.__class__ issubclass( , _value.__class__ )
 		# print isinstance( _value, TreeNode )
-		if( not type( child ) == TreeNode ) :
-			child = TreeNode( self, _value )
+		# if( not type( child ) == TreeNode ) :
+		# child = TreeNode( self, _value )
 		child.__parent = self
 		self.__children.append( child )
 

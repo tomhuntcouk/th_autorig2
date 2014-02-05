@@ -25,9 +25,10 @@ class BindRig( TreeNode ) :
 	def __init__( self, _jointchain ) :
 		super( BindRig, self ).__init__()
 
+		self.masterjointchain = _jointchain
 		self.add_child( _jointchain )
 		
-
+		
 
 
 
