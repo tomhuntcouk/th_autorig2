@@ -3,17 +3,21 @@ import pymel.all as pm
 import copy
 
 from tree import TreeNode
-from skeleton import RigJoint
+# from skeleton import RigJoint leads to:
+# TypeError: Determined type is Joint, which is not a subclass of desired type RigJoint # 
+# so we'll just:
+import skeleton
+# i think this is because we need to register the virtual class in every module
 import utils, settings
 
 
 class Jointchain( TreeNode ) :
-	def __init__( self, _partname, _jointlist ) :
+	def __init__( self, _jointlist ) :
 		super( Jointchain, self ).__init__()
 
 		# partname will stay the same throughout the whole tree
 		# we could therefore use self.root() to get the partname
-		self.partname = _partname
+		# self.partname = _partname
 		self.copymother = None
 
 		self.rigjoints = []
@@ -23,8 +27,8 @@ class Jointchain( TreeNode ) :
 		if clean_joints : self.create_rigjoints( clean_joints )
 
 	@classmethod
-	def from_startend( cls, _partname, _startjoint, _endjoint ) :
-		return cls( _partname, Jointchain.get_chain( _startjoint, _endjoint ) )
+	def from_startend( cls, _startjoint, _endjoint ) :
+		return cls( Jointchain.get_chain( _startjoint, _endjoint ) )
 
 	def create_rigjoints( self, _jointlist ) :
 		ret = []
@@ -36,23 +40,29 @@ class Jointchain( TreeNode ) :
 				ret.append( rigjoint )
  		return ret
 
- 	def orient_jointchain( self ) :
+ 	def orient_jointchain( self, _orientchildless=True ) :
  		for rigjoint in self.rigjoints :
- 			rigjoint.orient()
+ 			rigjoint.orient( _orientchildless )
 
  	def split_rigjoint( self, _pos, _numsplits ) :
  		rigjoint = self.rigjoints[ _pos ]
  		self.minorrigjoints[ rigjoint ] = rigjoint.split( _numsplits )
 
- 	def duplicate_jointchain( self ) :
+ 	def duplicate_jointchain( self, _class=None, _tag=None ) :
  		# make a deep copy of self
-		# loop through bones and replace bone with bone.duplicate
+		# loop through bones and replace rigjoint with a new one
 		# loop through minorbones and replace minorbone with bone.duplicate	
 
+		# we could duplicate the top joint and then compare with original to find the minorjoints
+		# creating each joint individually seems to be more direct though
+
 		dupjointchain = copy.deepcopy( self )
+		lastrigjoint = None
+		pm.select( None )
 		for i, rigjoint in enumerate( dupjointchain.rigjoints ) :
-			# duprigjoint = rigjoint.duplicate(  )
-			pass
+			duprigjointname = utils.name_from_dict( rigjoint, _class, _tag )
+			duprigjoint = skeleton.RigJoint( n=duprigjointname )
+			print duprigjoint
 
 
 	############################################################

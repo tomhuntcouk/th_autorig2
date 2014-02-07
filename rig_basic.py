@@ -22,25 +22,41 @@ from chain_basic import Jointchain
 class BindRig( TreeNode ) :
 	PARTNAME = 'bindRig'
 	
-	def __init__( self, _jointchain ) :
+	def __init__( self, _name  ) :
 		super( BindRig, self ).__init__()
 
-		self.masterjointchain = _jointchain
+		self.name = _name		
+		self.masterjointchain = None
+		# self.add_child( _jointchain )
+	
+	def create( self, _jointchain, _divisionstuple ) :		
+		# keeping these two references to _jointchain feels weird
 		self.add_child( _jointchain )
-		
-		
+		self.masterjointchain = _jointchain 
 
-
+		# ready masterjointchain for having subrigs created from it
+		self.masterjointchain.orient_jointchain()
+		for i, numdivisions in enumerate( _divisionstuple ) :
+			self.masterjointchain.split_rigjoint( i, numdivisions )
 
 
 class BasicRig( TreeNode ) :
 	PARTNAME = 'basicRig'
 	
-	def __init__( self, _jointchain ) :
+	def __init__( self ) :
 		super( BasicRig, self ).__init__()
-		self.partname = 'basicRig'
 
-		# self.add_child( _jointchain )
+	def create( self, _jointchain=None ) :
+		# get masterjointchain and copy it if no _jointchain is specified
+		if( not _jointchain ) :
+			print _jointchain
+			print self.tree_root()
+			print self.tree_root().masterjointchain.duplicate_jointchain(  )
+			# self.add_child( self.tree_root().masterjointchain.duplicate_jointchain() )
+		else :
+			self.add_child( _jointchain )
+
+
 
 
 

@@ -33,6 +33,7 @@ class BaseJoint( pm.Joint ) :
 
 	@classmethod
 	def _isVirtual( cls, obj, name ) :
+		# print 'isvirtual'
 		fn = pm.api.MFnDependencyNode( obj )
 		try :
 			if( fn.hasAttribute( settings.attrname ) ) :
@@ -44,10 +45,12 @@ class BaseJoint( pm.Joint ) :
 
 	@classmethod
 	def _preCreateVirtual( cls, **kwargs ) :
+		# print 'pre'
 		return kwargs
 
 	@classmethod
-	def _postCreateVirtual( cls, node ) :
+	def _postCreateVirtual( cls, node, **kwargs ) :
+		# print '-----', 'pst', node
 		node.addAttr( settings.attrname, dt='string' )
 		node.setAttr( settings.attrname, cls.nodeType )
 
@@ -55,20 +58,29 @@ class BaseJoint( pm.Joint ) :
 class RigJoint( BaseJoint ) :
 	nodeType = 'RigJoint'
 
-	def orient( self ) :
+	def orient( self, _orientchildless=True ) :		
 		# check we have a child to aim to
+		aim = ( 1, 0, 0 )
 		children = self.getChildren()
 		parent = self.getParent()
 		if( not parent ) : parent = self
 		if( len( children ) < 1 ) :
-			utils.wrn( '%s has no children. Skipping orient...' % ( self.name() ) )
-			return False
+			if( not _orientchildless ) :
+				utils.wrn( '%s has no children. Skipping orient...' % ( self.name() ) )
+				return False
+			else :
+				aim = ( -1, 0, 0 )			
+
+		pm.select( None )
 
 		# create children average aim locator
 		childrenlocator = pm.spaceLocator()
-		pm.delete( pm.pointConstraint( children + [ childrenlocator ], mo=False ) )
+		if( len( children ) ) :			
+			pm.delete( pm.pointConstraint( children + [ childrenlocator ], mo=False ) )
+		else :
+			childrenlocator.setTranslation( parent.getTranslation( space='world' ), space='world' )
 
-		# create up aim locator
+		# create up aim locator and aim self to it
 		uplocator = pm.spaceLocator()
 		pm.delete( pm.pointConstraint( [ parent, self, childrenlocator, uplocator ], mo=False ) )
 		pm.delete( pm.aimConstraint( [ self, uplocator ], mo=False, wut='object', wuo=parent ) )
@@ -76,7 +88,7 @@ class RigJoint( BaseJoint ) :
 
 		# unparent children, aim the joint to the average of it's children, then reparent children
 		for joint in children : joint.setParent( None )
-		pm.delete( pm.aimConstraint( [ childrenlocator, self ], mo=False, wut='object', wuo=uplocator ) )
+		pm.delete( pm.aimConstraint( [ childrenlocator, self ], mo=False, wut='object', wuo=uplocator, aim=aim ) )
 		pm.makeIdentity( self, a=True, r=True )
 		for joint in children : joint.setParent( self )
 
@@ -130,6 +142,7 @@ class RigJoint( BaseJoint ) :
 		pm.select( self )
 		return ret
 
+print 'skeleton'
 
 # pm.factories.registerVirtualClass( BaseJoint, nameRequired=False )
 pm.factories.registerVirtualClass( RigJoint, nameRequired=False )

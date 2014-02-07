@@ -4,7 +4,8 @@ import pprint
 # from controls import Control
 from chain_basic import Jointchain
 from rig_basic import *
-# from skeleton import RigJoint
+from rig_ikfk import *
+from skeleton import RigJoint
 # from rig_basic import BaseBindrig
 # from rig_ikfk import *
 
@@ -41,18 +42,18 @@ def main() :
 	# vclass.testJoint()
 	# return
 
-	l = 'file -f -options "v=0;"  -esn false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
+	l = 'file -f -options "v=0;"  -esn 	false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
 	pm.mel.eval( l )
 	# print pm.api.MFnDependencyNode
 
-	# print type(RigJoint( name="yay" ))
+	# RigJoint( name='test' )
 	
 	# print type(pm.PyNode( 'pelvis_j' ))
 
 	# print MyVirtualNode(n='wow')
 
 	l_arm = Jointchain.from_startend( 
-		'left_arm',
+		# 'left_arm',
 		pm.PyNode( 'leftUpperArm_1_j' ), 
 		pm.PyNode( 'leftWrist_j' )
 	)
@@ -66,11 +67,23 @@ def main() :
 
 	# print l_arm.tree_parent()
 
-	l_arm_rig = BindRig( l_arm )
+	l_arm_rig = BindRig( 
+		'left_arm'		
+	)
+	l_arm_rig.create( 
+		l_arm,
+		( 0, 1 )
+	)
 
-	for c in l_arm_rig.tree_children() :
-		print c
-		# pass
+	fk_rig = FkRig()	
+	l_arm_rig.add_child( fk_rig )
+	# print fk_rig.tree_parent()
+	fk_rig.create()
+
+
+	# for c in l_arm_rig.tree_children() :	
+	# 	print c.tree_value().tree_parent()
+	# 	# pass
 
 
 
