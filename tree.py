@@ -18,9 +18,21 @@ class TreeNode( object ) :
 		self.__parent = _parent
 		self.__children = []
 
+<<<<<<< HEAD
 	def add_child( self, _value ) :
 		# child = TreeNode( self, _value )
 		self.children.append( _value )
+=======
+	def add_child( self, _value ) :		
+		child = _value
+		print _value
+		# print '---',_value, _value.__class__ issubclass( , _value.__class__ )
+		# print isinstance( _value, TreeNode )
+		# if( not type( child ) == TreeNode ) :
+		# child = TreeNode( self, _value )
+		child.__parent = self
+		self.__children.append( child )
+>>>>>>> b853c271a25aac101c4204b31011cae731333c0b
 
 	def tree_parent( self ) :
 		return self.__parent

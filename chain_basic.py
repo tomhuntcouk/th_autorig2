@@ -1,10 +1,11 @@
 import pymel.all as pm
 
+import copy
+
 from tree import TreeNode
-from skeleton import RigJoint, BaseJoint
-# from skeleton import convert_to_virtual
-# import skeleton
-import utils
+from skeleton import RigJoint
+import utils, settings
+
 
 class Jointchain( TreeNode ) :
 	def __init__( self, _partname, _jointlist ) :
@@ -15,25 +16,44 @@ class Jointchain( TreeNode ) :
 		self.partname = _partname
 		self.copymother = None
 
-		self.bones = []
-		self.minorbones = {}
+		self.rigjoints = []
+		self.minorrigjoints = {}
 
 		clean_joints = Jointchain.clean_jointlist( _jointlist )
-		if clean_joints : self.create_bones( clean_joints )
+		if clean_joints : self.create_rigjoints( clean_joints )
 
 	@classmethod
 	def from_startend( cls, _partname, _startjoint, _endjoint ) :
 		return cls( _partname, Jointchain.get_chain( _startjoint, _endjoint ) )
 
-	def create_bones( self, _jointlist ) :
+	def create_rigjoints( self, _jointlist ) :
 		ret = []
 		for joint in _jointlist :				
 			if( RigJoint.convert_to_virtual( joint ) ) :
-				bone = pm.PyNode( joint )
-				self.minorbones[ bone ] = []
-				ret.append( bone )
- 		
+				rigjoint = pm.PyNode( joint )
+				self.rigjoints.append( rigjoint )
+				self.minorrigjoints[ rigjoint ] = []
+				ret.append( rigjoint )
  		return ret
+
+ 	def orient_jointchain( self ) :
+ 		for rigjoint in self.rigjoints :
+ 			rigjoint.orient()
+
+ 	def split_rigjoint( self, _pos, _numsplits ) :
+ 		rigjoint = self.rigjoints[ _pos ]
+ 		self.minorrigjoints[ rigjoint ] = rigjoint.split( _numsplits )
+
+ 	def duplicate_jointchain( self ) :
+ 		# make a deep copy of self
+		# loop through bones and replace bone with bone.duplicate
+		# loop through minorbones and replace minorbone with bone.duplicate	
+
+		dupjointchain = copy.deepcopy( self )
+		for i, rigjoint in enumerate( dupjointchain.rigjoints ) :
+			# duprigjoint = rigjoint.duplicate(  )
+			pass
+
 
 	############################################################
 
