@@ -19,8 +19,8 @@ class TreeNode( object ) :
 		self.__children = []
 
 	def add_child( self, _value ) :
-		child = TreeNode( self, _value )
-		self.children.append( child )
+		# child = TreeNode( self, _value )
+		self.children.append( _value )
 
 	def tree_parent( self ) :
 		return self.__parent
