@@ -49,12 +49,14 @@ class BasicRig( TreeNode ) :
 	def create( self, _jointchain=None ) :
 		# get masterjointchain and copy it if no _jointchain is specified
 		if( not _jointchain ) :
-			print _jointchain
-			print self.tree_root()
-			print self.tree_root().masterjointchain.duplicate_jointchain(  )
-			# self.add_child( self.tree_root().masterjointchain.duplicate_jointchain() )
+			self.add_child( self.tree_root().masterjointchain.duplicate_jointchain( self.PARTNAME ) )
 		else :
 			self.add_child( _jointchain )
+
+	def tidy( self ) :
+		for child in self.tree_children() :
+			print child
+
 
 
 

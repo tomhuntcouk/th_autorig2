@@ -4,6 +4,8 @@ jointchain <--- bind chain
 	rig
 		subrig
 			jointchain
+				control
+				control
 			jointchain
 			jointchain
 		subrig	
@@ -13,17 +15,14 @@ jointchain <--- bind chain
 
 
 class TreeNode( object ) :
+	PARTNAME = 'treeNode'
+
 	def __init__( self, _parent=None, _value=None ) :
 		self.__value = _value
 		if not self.__value : self.__value = self		
 		self.__parent = _parent
 		self.__children = []
 
-<<<<<<< HEAD
-	def add_child( self, _value ) :
-		# child = TreeNode( self, _value )
-		self.children.append( _value )
-=======
 	def add_child( self, _value ) :		
 		# # if _value is a TreeNode, use it
 		# # otherwise we'll create a new TreeNode with _value as __value
@@ -44,7 +43,6 @@ class TreeNode( object ) :
 		child.__parent = self
 		# print '-', child, child.__parent
 		self.__children.append( child )
->>>>>>> b853c271a25aac101c4204b31011cae731333c0b
 
 	def tree_value( self ) :
 		return self.__value
@@ -53,8 +51,11 @@ class TreeNode( object ) :
 		# print '=', self.__parent
 		return self.__parent
 
-	def tree_children( self ) :
-		return self.__children
+	def tree_children( self, _partname=None ) :
+		if not _partname :
+			return self.__children
+		else :
+			return [ c for c in self.__children if c.PARTNAME == _partname ]
 
 	def tree_siblings( self ) :
 		return self.parent().children()

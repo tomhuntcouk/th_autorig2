@@ -9,29 +9,26 @@ __dataattrdict = {
 	'str'	: 'dt="string"'
 }
 
-__classdict = {
+__tagdict = {
 	None				: '',
-	'FkRig'				: '_FKJ',
-	'IkChainrig'		: '_IKJ',
-	'BaseBlendrig'		: '_BJ',
-	'Control'			: '_CNTRL',	
-	'IkHandle'			: '_HND',
-	'IkEffector'		: '_EFF',
-	'AnimCurveUL'		: '_ACUL',
-	'MultiplyDivide'	: '_MULTDIV',
-	'PlusMinusAverage'	: '_PMA'
+	'fkRig'				: 'FKJ',
+	'IkChainrig'		: 'IKJ',
+	'BaseBlendrig'		: 'BJ',
+	'control'			: 'CNTRL',	
+	'IkHandle'			: 'HND',
+	'IkEffector'		: 'EFF',
+	'AnimCurveUL'		: 'ACUL',
+	'MultiplyDivide'	: 'MULTDIV',
+	'PlusMinusAverage'	: 'PMA',
+	'sdk' 				: 'SDK',
+	'zero' 				: 'ZERO',
+	'ik' 				: 'IK',
+	'ikdriver' 			: 'DRIVER',
+	'fk' 				: 'FK',
+	'polevector' 		: 'PV',
+	'ikfkswitcher' 		: 'IKFK'
 }
 
-__tagdict = {
-	None : 			'',		
-	'sdk' : 		'_SDK',
-	'zero' : 		'_ZERO',
-	'ik' :			'_IK',
-	'ikdriver' :	'_DRIVER',
-	'fk' :			'_FK',
-	'polevector' :	'_PV',
-	'ikfkswitcher' : '_IKFK'
-}
 
 #########################################################
 # debug
@@ -75,14 +72,19 @@ def add_set_attr( _obj, _attr, _value ) :
 def renumber_from_name( _name, _number ) :
 	d = settings.name_string_delimeter
 	namesplit = _name.rsplit( d, 1 )
-	return '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
+	name = '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
+	return name
 
-def name_from_dict( _obj, _class=None, _tag=None ) :
-	if not _class and not _tag : return _obj.name()
-	namesplit = _obj.name().rsplit( '_', 1 )	
+def get_tag( _tag ) :
+	return __tagdict[ _tag ]
+
+def name_from_tags( _obj, *_tags ) :	
+	try : name = _obj.name()
+	except : name = _obj
+	namesplit = name.rsplit( '_', 1 )	
 	ret = namesplit[0]
-	if _tag : ret += settings.name_string_delimeter + __tagdict[ _tag ]
-	if _class : ret += settings.name_string_delimeter + __classdict[ _class ]
+	for tag in _tags :
+		if tag : ret += settings.name_string_delimeter + get_tag( tag )
 	return ret
 
 

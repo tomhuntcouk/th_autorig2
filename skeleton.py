@@ -1,7 +1,6 @@
 import pymel.all as pm
-import utils
-import inspect
 
+import utils
 import settings
 
 """
@@ -21,42 +20,56 @@ clone the PyMel Github repo to resolve the problem
 
 
 class BaseJoint( pm.Joint ) :
-	nodeType = 'BaseJoint'
+	NODETYPE = 'BaseJoint'
 
 	@classmethod
 	def convert_to_virtual( cls, _joint ) :
 		if( type( _joint ) == pm.Joint ) :
-			return utils.add_set_attr( _joint, settings.attrname, cls.nodeType )
+			return utils.add_set_attr( _joint, settings.attrname, cls.NODETYPE )
 		else :		
 			utils.err( '%s is not a joint' % ( _joint.name() ) )	
 			return False
 
 	@classmethod
 	def _isVirtual( cls, obj, name ) :
-		# print 'isvirtual'
 		fn = pm.api.MFnDependencyNode( obj )
 		try :
 			if( fn.hasAttribute( settings.attrname ) ) :
 				plug = fn.findPlug( settings.attrname )
-				return plug.asString() == cls.nodeType
+				return plug.asString() == cls.NODETYPE
 		except :
 			pass
 		return False
 
 	@classmethod
 	def _preCreateVirtual( cls, **kwargs ) :
-		# print 'pre'
+		if 'n' in kwargs :
+			name = kwargs.pop( 'n' )
+		elif 'name' in kwargs :
+			name = kwargs.get( 'name' )
+		else :
+			name = cls.NODETYPE
+		kwargs[ 'name' ] = name
 		return kwargs
 
 	@classmethod
 	def _postCreateVirtual( cls, node, **kwargs ) :
-		# print '-----', 'pst', node
 		node.addAttr( settings.attrname, dt='string' )
-		node.setAttr( settings.attrname, cls.nodeType )
+		node.setAttr( settings.attrname, cls.NODETYPE )
 
 
 class RigJoint( BaseJoint ) :
-	nodeType = 'RigJoint'
+	NODETYPE = 'RigJoint'
+
+	def duplicate( self, *args, **kwargs ) :
+		# duplicates the joint without children
+		newrigjoints = super( RigJoint, self ).duplicate( *args, **kwargs )
+		for newrigjoint in newrigjoints :
+			newrigjoint.setParent( None )
+			newrigjointchildren = newrigjoint.getChildren()
+			if( len( newrigjointchildren ) ) :
+				pm.delete( newrigjointchildren[0] )
+		return newrigjoints
 
 	def orient( self, _orientchildless=True ) :		
 		# check we have a child to aim to
@@ -142,7 +155,6 @@ class RigJoint( BaseJoint ) :
 		pm.select( self )
 		return ret
 
-print 'skeleton'
 
 # pm.factories.registerVirtualClass( BaseJoint, nameRequired=False )
 pm.factories.registerVirtualClass( RigJoint, nameRequired=False )

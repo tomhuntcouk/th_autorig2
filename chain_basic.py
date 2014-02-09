@@ -12,6 +12,8 @@ import utils, settings
 
 
 class Jointchain( TreeNode ) :
+	PARTNAME = 'jointchain'
+
 	def __init__( self, _jointlist ) :
 		super( Jointchain, self ).__init__()
 
@@ -19,7 +21,7 @@ class Jointchain( TreeNode ) :
 		# we could therefore use self.root() to get the partname
 		# self.partname = _partname
 		self.copymother = None
-
+		self.duplicates = []
 		self.rigjoints = []
 		self.minorrigjoints = {}
 
@@ -33,7 +35,7 @@ class Jointchain( TreeNode ) :
 	def create_rigjoints( self, _jointlist ) :
 		ret = []
 		for joint in _jointlist :				
-			if( RigJoint.convert_to_virtual( joint ) ) :
+			if( skeleton.RigJoint.convert_to_virtual( joint ) ) :
 				rigjoint = pm.PyNode( joint )
 				self.rigjoints.append( rigjoint )
 				self.minorrigjoints[ rigjoint ] = []
@@ -48,7 +50,7 @@ class Jointchain( TreeNode ) :
  		rigjoint = self.rigjoints[ _pos ]
  		self.minorrigjoints[ rigjoint ] = rigjoint.split( _numsplits )
 
- 	def duplicate_jointchain( self, _class=None, _tag=None ) :
+ 	def duplicate_jointchain( self, _class=None, _tag=None, _simple=False ) :
  		# make a deep copy of self
 		# loop through bones and replace rigjoint with a new one
 		# loop through minorbones and replace minorbone with bone.duplicate	
@@ -57,12 +59,31 @@ class Jointchain( TreeNode ) :
 		# creating each joint individually seems to be more direct though
 
 		dupjointchain = copy.deepcopy( self )
+		dupjointchain.copymother = self
 		lastrigjoint = None
 		pm.select( None )
 		for i, rigjoint in enumerate( dupjointchain.rigjoints ) :
-			duprigjointname = utils.name_from_dict( rigjoint, _class, _tag )
-			duprigjoint = skeleton.RigJoint( n=duprigjointname )
-			print duprigjoint
+			duprigjointname = utils.name_from_tags( rigjoint, _class, _tag )
+			duprigjoint = rigjoint.duplicate( n=duprigjointname )[0]
+			dupjointchain.rigjoints[i] = duprigjoint
+			duprigjoint.setParent( lastrigjoint )
+			lastrigjoint = duprigjoint
+
+			# _simple copies only major rigjoints
+			if( not _simple ) :
+				dupjointchain.minorrigjoints[ duprigjoint ] = []
+				# duplicate each minorrigjoint, add it to it's duplicated major rigjoint array of minor rigjoints				
+				for minorrigjoint in dupjointchain.minorrigjoints[ rigjoint ] :
+					dupminorrigjointname = utils.name_from_tags( minorrigjoint, _class, _tag )
+					dupminorrigjoint = minorrigjoint.duplicate( n=dupminorrigjointname )[0]
+					dupjointchain.minorrigjoints[ duprigjoint ].append( dupminorrigjoint)
+					dupminorrigjoint.setParent( lastrigjoint )
+					lastrigjoint = dupminorrigjoint
+				# delete the original rigjoint entry in the dict
+				del dupjointchain.minorrigjoints[ rigjoint ]
+				
+		self.duplicates.append( dupjointchain )
+		return dupjointchain
 
 
 	############################################################
