@@ -5,7 +5,7 @@ import utils
 import settings
 
 class BaseControl( pm.Transform ) :
-	NODETYPE = 'baseControl'
+	PARTNAME = 'baseControl'
 
 	__shapedict = {
 		# 'default' : 'mc.spaceLocator()'
@@ -16,7 +16,7 @@ class BaseControl( pm.Transform ) :
 	@classmethod
 	def convert_to_virtual( cls, _transform ) :
 		if( type( _transform ) == pm.Tranform ) :
-			return utils.add_set_attr( _transform, settings.attrname, cls.NODETYPE )
+			return utils.add_set_attr( _transform, settings.attrname, cls.PARTNAME )
 		else :		
 			utils.err( '%s is not a transform' % ( _transform.name() ) )	
 			return False
@@ -27,7 +27,7 @@ class BaseControl( pm.Transform ) :
 		try :
 			if( fn.hasAttribute( settings.attrname ) ) :
 				plug = fn.findPlug( settings.attrname )
-				return plug.asString() == cls.NODETYPE
+				return plug.asString() == cls.PARTNAME
 		except :
 			pass
 		return False
@@ -39,7 +39,7 @@ class BaseControl( pm.Transform ) :
 		elif 'name' in kwargs :
 			name = kwargs.get( 'name' )
 		else :
-			name = cls.NODETYPE
+			name = cls.PARTNAME
 		name = utils.name_from_tags( name, 'control' )
 		kwargs[ 'name' ] = name
 		
@@ -77,12 +77,12 @@ class BaseControl( pm.Transform ) :
 		node = pm.PyNode( node )
 
 		node.addAttr( settings.attrname, dt='string' )
-		node.setAttr( settings.attrname, cls.NODETYPE )
+		node.setAttr( settings.attrname, cls.PARTNAME )
 
 
 
 class RigControl( BaseControl ) :
-	NODETYPE = 'rigControl'
+	PARTNAME = 'rigControl'
 
 	def sdk_group( self ) :
 		parent = self.getParent()

@@ -48,8 +48,8 @@ def main() :
 	# print type(pm.PyNode( 'pelvis_j' ))
 	# print MyVirtualNode(n='wow')
 
-	for group in settings.staticgroupsdict.items() :
-		print group
+	for group in settings.staticgroupsdict.values() :
+		pm.group( n=group, empty=True, world=True )
 
 	l_arm = Jointchain.from_startend( 
 		# 'left_arm',

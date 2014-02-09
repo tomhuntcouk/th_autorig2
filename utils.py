@@ -9,26 +9,6 @@ __dataattrdict = {
 	'str'	: 'dt="string"'
 }
 
-__tagdict = {
-	None				: '',
-	'fkRig'				: 'FKJ',
-	'IkChainrig'		: 'IKJ',
-	'BaseBlendrig'		: 'BJ',
-	'control'			: 'CNTRL',	
-	'IkHandle'			: 'HND',
-	'IkEffector'		: 'EFF',
-	'AnimCurveUL'		: 'ACUL',
-	'MultiplyDivide'	: 'MULTDIV',
-	'PlusMinusAverage'	: 'PMA',
-	'sdk' 				: 'SDK',
-	'zero' 				: 'ZERO',
-	'ik' 				: 'IK',
-	'ikdriver' 			: 'DRIVER',
-	'fk' 				: 'FK',
-	'polevector' 		: 'PV',
-	'ikfkswitcher' 		: 'IKFK'
-}
-
 
 #########################################################
 # debug
@@ -76,7 +56,7 @@ def renumber_from_name( _name, _number ) :
 	return name
 
 def get_tag( _tag ) :
-	return __tagdict[ _tag ]
+	return settings.tagdict[ _tag ]
 
 def name_from_tags( _obj, *_tags ) :	
 	try : name = _obj.name()

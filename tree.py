@@ -66,8 +66,16 @@ class TreeNode( object ) :
 		while target.tree_parent() and c < 5:
 			target = target.tree_parent()
 		return target
-		
+	
+	def tree_all_descendants( self, _ret=[] ) :
+		for child in self.tree_children() :
+			_ret.append( child )
+			try :
+				child.tree_all_descendants( _ret )
+			except :
+				pass
 
+		return _ret
 
 
 

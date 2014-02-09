@@ -20,12 +20,12 @@ clone the PyMel Github repo to resolve the problem
 
 
 class BaseJoint( pm.Joint ) :
-	NODETYPE = 'BaseJoint'
+	PARTNAME = 'BaseJoint'
 
 	@classmethod
 	def convert_to_virtual( cls, _joint ) :
 		if( type( _joint ) == pm.Joint ) :
-			return utils.add_set_attr( _joint, settings.attrname, cls.NODETYPE )
+			return utils.add_set_attr( _joint, settings.attrname, cls.PARTNAME )
 		else :		
 			utils.err( '%s is not a joint' % ( _joint.name() ) )	
 			return False
@@ -36,7 +36,7 @@ class BaseJoint( pm.Joint ) :
 		try :
 			if( fn.hasAttribute( settings.attrname ) ) :
 				plug = fn.findPlug( settings.attrname )
-				return plug.asString() == cls.NODETYPE
+				return plug.asString() == cls.PARTNAME
 		except :
 			pass
 		return False
@@ -48,18 +48,18 @@ class BaseJoint( pm.Joint ) :
 		elif 'name' in kwargs :
 			name = kwargs.get( 'name' )
 		else :
-			name = cls.NODETYPE
+			name = cls.PARTNAME
 		kwargs[ 'name' ] = name
 		return kwargs
 
 	@classmethod
 	def _postCreateVirtual( cls, node, **kwargs ) :
 		node.addAttr( settings.attrname, dt='string' )
-		node.setAttr( settings.attrname, cls.NODETYPE )
+		node.setAttr( settings.attrname, cls.PARTNAME )
 
 
 class RigJoint( BaseJoint ) :
-	NODETYPE = 'RigJoint'
+	PARTNAME = 'RigJoint'
 
 	def duplicate( self, *args, **kwargs ) :
 		# duplicates the joint without children

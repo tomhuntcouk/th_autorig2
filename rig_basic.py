@@ -9,14 +9,10 @@ from tree import TreeNode
 from chain_basic import Jointchain
 
 
-# class BaseRig( TreeNode ) :
-# 	PARTNAME = 'base'
-
-# 	def __init__( self, _jointchain ) :
-# 		super( BindRig, self ).__init__()
-
-# 	def add_rig( self, _rig ) :
-# 		self.add_child( _rig )
+tidydict = {
+	'jointchain' 	: settings.staticgroupsdict[ 'rig' ],
+	'rigControl'	: settings.staticgroupsdict[ 'controls' ],
+}
 
 
 class BindRig( TreeNode ) :
@@ -54,8 +50,10 @@ class BasicRig( TreeNode ) :
 			self.add_child( _jointchain )
 
 	def tidy( self ) :
-		for child in self.tree_children() :
-			print child
+		alldescendants = self.tree_all_descendants()
+		for descendant in alldescendants :
+			group = tidydict[ descendant.PARTNAME ]
+
 
 
 
