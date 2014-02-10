@@ -21,6 +21,8 @@ class FkRig( BasicRig ) :
 			control = controls.RigControl( n=rigjoint.name() )
 			control.position_to_object( rigjoint )
 			pm.orientConstraint( control, rigjoint )
+			if( lastcontrol ) :
+				pm.parentConstraint( lastcontrol, control, mo=True )
 			zerogroup = control.zero_group()
 			if( zerogroup ) :
 				zerogroup.setParent( lastcontrol )

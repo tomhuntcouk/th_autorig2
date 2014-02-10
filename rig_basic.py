@@ -8,10 +8,11 @@ except ImportError :
 from tree import TreeNode
 from chain_basic import Jointchain
 
+import settings
 
 tidydict = {
-	'jointchain' 	: settings.staticgroupsdict[ 'rig' ],
-	'rigControl'	: settings.staticgroupsdict[ 'controls' ],
+	'jointchain' 	: ( settings.staticgroupsdict[ 'rig' ], '.rigjoints[0]' ),
+	'rigControl'	: ( settings.staticgroupsdict[ 'controls' ], '.zero_group()' ),
 }
 
 
@@ -52,7 +53,12 @@ class BasicRig( TreeNode ) :
 	def tidy( self ) :
 		alldescendants = self.tree_all_descendants()
 		for descendant in alldescendants :
-			group = tidydict[ descendant.PARTNAME ]
+			topgroup = tidydict[ descendant.PARTNAME ][0]
+			obj = eval( 'descendant' + tidydict[ descendant.PARTNAME ][1] )
+
+			group = utils
+
+			# obj.setParent( topgroup )
 
 
 
