@@ -69,6 +69,20 @@ def name_from_tags( _obj, *_tags ) :
 
 
 #########################################################
+# general
+#########################################################
+
+
+def make_groups_from_path_list( _pathlist, _topgroup=None ) :
+	lastgroup = _topgroup
+	pm.select( None )
+	for level in _pathlist :
+		group = pm.group( n=level.PARTNAME )
+		lastgroup = group
+		pm.select( group )
+
+
+#########################################################
 # math
 #########################################################
 

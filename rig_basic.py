@@ -8,7 +8,7 @@ except ImportError :
 from tree import TreeNode
 from chain_basic import Jointchain
 
-import settings
+import settings, utils
 
 tidydict = {
 	'jointchain' 	: ( settings.staticgroupsdict[ 'rig' ], '.rigjoints[0]' ),
@@ -56,9 +56,11 @@ class BasicRig( TreeNode ) :
 			topgroup = tidydict[ descendant.PARTNAME ][0]
 			obj = eval( 'descendant' + tidydict[ descendant.PARTNAME ][1] )
 
-			group = utils
+			pathlist = descendant.tree_path_list()
+			groups = utils.make_groups_from_path_list( pathlist, topgroup )
 
 			# obj.setParent( topgroup )
+
 
 
 

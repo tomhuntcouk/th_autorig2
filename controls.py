@@ -1,10 +1,12 @@
 import pymel.all as pm
 import maya.cmds as mc
 
+from tree import TreeNode
+
 import utils
 import settings
 
-class BaseControl( pm.Transform ) :
+class BaseControl( pm.Transform, TreeNode ) :
 	PARTNAME = 'baseControl'
 
 	__shapedict = {

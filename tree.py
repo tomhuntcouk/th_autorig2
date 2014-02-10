@@ -39,31 +39,41 @@ class TreeNode( object ) :
 		# else :
 		# 	child = TreeNode( _value=_value )
 
+		self.__check_tree_children()
+
 		child = _value
 		child.__parent = self
 		# print '-', child, child.__parent
 		self.__children.append( child )
 
+	def tree_path_list( self ) :
+		ret = []
+		target = self
+		while target.tree_parent() :
+			ret.append( target )
+			target = target.tree_parent()
+		ret.append( target )
+		return ret
+
 	def tree_value( self ) :
 		return self.__value
 
 	def tree_parent( self ) :
-		# print '=', self.__parent
 		return self.__parent
 
-	def tree_children( self, _partname=None ) :
+	def tree_children( self, _partname=None ) :		
+		self.__check_tree_children()
 		if not _partname :
 			return self.__children
 		else :
 			return [ c for c in self.__children if c.PARTNAME == _partname ]
 
 	def tree_siblings( self ) :
-		return self.parent().children()
+		return self.tree_parent().tree_children()
 
-	def tree_root( self ) :		
+	def tree_root( self ) :
 		target = self
-		c = 0
-		while target.tree_parent() and c < 5:
+		while target.tree_parent():
 			target = target.tree_parent()
 		return target
 	
@@ -76,6 +86,16 @@ class TreeNode( object ) :
 				pass
 
 		return _ret
+
+	def __check_tree_children( self ) :
+		try :
+			self.__children
+			return True
+		except :
+			self.__children = []
+			return False
+
+
 
 
 

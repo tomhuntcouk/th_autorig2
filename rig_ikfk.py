@@ -17,6 +17,7 @@ class FkRig( BasicRig ) :
 		super( FkRig, self ).create( _jointchain )
 
 		lastcontrol = None
+		print self.tree_children()
 		for rigjoint in self.tree_children( 'jointchain' )[0].rigjoints :
 			control = controls.RigControl( n=rigjoint.name() )
 			control.position_to_object( rigjoint )
