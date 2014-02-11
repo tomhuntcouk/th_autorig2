@@ -61,7 +61,7 @@ def get_tag( _tag ) :
 def name_from_tags( _obj, *_tags ) :	
 	try : name = _obj.name()
 	except : name = _obj
-	namesplit = name.rsplit( '_', 1 )	
+	namesplit = name.rsplit( settings.name_string_delimeter, 1 )
 	ret = namesplit[0]
 	for tag in _tags :
 		if tag : ret += settings.name_string_delimeter + get_tag( tag )
@@ -74,12 +74,21 @@ def name_from_tags( _obj, *_tags ) :
 
 
 def make_groups_from_path_list( _pathlist, _topgroup=None ) :
+	_ret = []
 	lastgroup = _topgroup
-	pm.select( None )
+	try :
+		name = _pathlist[0].name
+	except :
+		err( 'It appears that %s does not have a name attribute. Make sure it is a BindChain instance.' % ( _pathlist[0] ) )
 	for level in _pathlist :
-		group = pm.group( n=level.PARTNAME )
+		pm.select( None )
+		groupname = '%s%s%s' % ( name, settings.name_string_delimeter, level.PARTNAME )
+		# groupname = name_from_tags( groupname, 'group' )
+		group = pm.group( n=groupname )
+		group.setParent( lastgroup )
+		_ret.append( group )
 		lastgroup = group
-		pm.select( group )
+	pm.select( lastgroup )
 
 
 #########################################################

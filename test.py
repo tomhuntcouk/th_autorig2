@@ -64,7 +64,7 @@ def main() :
 	# print l_arm.tree_parent()
 
 	l_arm_rig = BindRig( 
-		'left_arm'		
+		'leftArm'		
 	)
 	l_arm_rig.create( 
 		l_arm,

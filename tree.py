@@ -53,7 +53,7 @@ class TreeNode( object ) :
 			ret.append( target )
 			target = target.tree_parent()
 		ret.append( target )
-		return ret
+		return ret[::-1]
 
 	def tree_value( self ) :
 		return self.__value

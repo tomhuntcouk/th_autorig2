@@ -30,5 +30,6 @@ tagdict = {
 	'ikdriver' 			: 'DRIVER',
 	'fk' 				: 'FK',
 	'polevector' 		: 'PV',
-	'ikfkswitcher' 		: 'IKFK'
+	'ikfkswitcher' 		: 'IKFK',
+	'group'				: 'GRP',
 }
