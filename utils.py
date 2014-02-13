@@ -75,20 +75,35 @@ def name_from_tags( _obj, *_tags ) :
 
 def make_groups_from_path_list( _pathlist, _topgroup=None ) :
 	_ret = []
-	lastgroup = _topgroup
+	lastgroup = pm.PyNode( _topgroup )
 	try :
 		name = _pathlist[0].name
 	except :
 		err( 'It appears that %s does not have a name attribute. Make sure it is a BindChain instance.' % ( _pathlist[0] ) )
+		return False
 	for level in _pathlist :
 		pm.select( None )
 		groupname = '%s%s%s' % ( name, settings.name_string_delimeter, level.PARTNAME )
 		# groupname = name_from_tags( groupname, 'group' )
-		group = pm.group( n=groupname )
-		group.setParent( lastgroup )
+		
+		
+		# check if the group exists and return the previosuly created group ifit does
+		# otherwise create a new group
+		group = None
+		lastgroupchildren = lastgroup.getChildren()
+		for child in lastgroupchildren :
+			if( child.name().split( '|' )[-1] == groupname ) :
+				group = child
+				break		
+		if( not group ) :
+			group = pm.group( n=groupname )
+			group.setParent( lastgroup )
+
 		_ret.append( group )
 		lastgroup = group
+
 	pm.select( lastgroup )
+	return _ret
 
 
 #########################################################

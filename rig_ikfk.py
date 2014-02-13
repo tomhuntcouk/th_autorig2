@@ -25,8 +25,8 @@ class FkRig( BasicRig ) :
 			if( lastcontrol ) :
 				pm.parentConstraint( lastcontrol, control, mo=True )
 			zerogroup = control.zero_group()
-			if( zerogroup ) :
-				zerogroup.setParent( lastcontrol )
+			# if( zerogroup ) :
+			# 	zerogroup.setParent( lastcontrol )
 			lastcontrol = control
 			self.add_child( control )
 
