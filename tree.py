@@ -1,3 +1,5 @@
+import fnmatch
+
 """
 
 jointchain <--- bind chain
@@ -12,6 +14,7 @@ jointchain <--- bind chain
 			jointchain
 
 """
+
 
 
 class TreeNode( object ) :
@@ -66,7 +69,8 @@ class TreeNode( object ) :
 		if not _partname :
 			return self.__children
 		else :
-			return [ c for c in self.__children if c.PARTNAME == _partname ]
+			# return [ c for c in self.__children if c.PARTNAME == _partname ]
+			return fnmatch.filter( [ c.PARTNAME for c in self.__children] , _partname )
 
 	def tree_siblings( self ) :
 		return self.tree_parent().tree_children()

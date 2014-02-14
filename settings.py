@@ -13,11 +13,15 @@ staticgroupsdict = {
 	'controls'		: 'CONTROLS_GRP',
 }
 
+staticcontrols = {
+	'ikfkblend'		: 'ikfkBlend_CNTRL',
+}
+
 tagdict = {
 	None				: '',
 	'fkRig'				: 'FKJ',
 	'IkChainrig'		: 'IKJ',
-	'BaseBlendrig'		: 'BJ',
+	'blendRig'			: 'BJ',
 	'control'			: 'CNTRL',	
 	'IkHandle'			: 'HND',
 	'IkEffector'		: 'EFF',

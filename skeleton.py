@@ -25,7 +25,7 @@ class BaseJoint( pm.Joint ) :
 	@classmethod
 	def convert_to_virtual( cls, _joint ) :
 		if( type( _joint ) == pm.Joint ) :
-			return utils.add_set_attr( _joint, settings.attrname, cls.PARTNAME )
+			return utils.add_set_attr( _joint, settings.attrname, cls.PARTNAME, _keyable=False, _locked=True )
 		else :		
 			utils.err( '%s is not a joint' % ( _joint.name() ) )	
 			return False

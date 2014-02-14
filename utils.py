@@ -6,7 +6,8 @@ import inspect
 import settings
 
 __dataattrdict = {
-	'str'	: 'dt="string"'
+	'str'	: 'dt="string"',
+	'float' : 'at="float"',
 }
 
 
@@ -38,13 +39,17 @@ def wrn( _message ) :
 #########################################################
 
 
-def add_set_attr( _obj, _attr, _value ) :
+def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :	
 	if( not _obj.hasAttr( _attr ) ) :
 		t = type( _value ).__name__
-		eval( '_obj.addAttr( _attr, %s )' % ( __dataattrdict[ t ] ) )
+		eval( '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable ) )
+
+	attr = pm.PyNode( '%s.%s' % ( _obj, _attr ) )	
+
 	try :
 		_obj.setAttr( _attr, _value )
-		return True
+		attr.setLocked( _locked )
+		return attr
 	except AttributeError :
 		err( 'value of %s cannot be applied to %s attr %s.%s' % ( _value, _obj.getAttr( _attr, type=True ), _obj, _attr ) )
 		return False

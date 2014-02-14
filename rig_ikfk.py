@@ -1,6 +1,6 @@
 import pymel.all as pm
 
-from rig_basic import BasicRig
+from rig_basic import *
 import controls
 import utils
 
@@ -24,9 +24,33 @@ class FkRig( BasicRig ) :
 			pm.orientConstraint( control, rigjoint )
 			if( lastcontrol ) :
 				pm.parentConstraint( lastcontrol, control, mo=True )
-			zerogroup = control.zero_group()
+			# zerogroup = control.zero_group()
 			# if( zerogroup ) :
 			# 	zerogroup.setParent( lastcontrol )
 			lastcontrol = control
 			self.add_child( control )
 
+
+
+
+class IkRig( BasicRig ) :
+	PARTNAME = 'ikRig'
+
+	def __init__( self ) :
+		pass
+
+	def create( self, _jointchain=None ) :
+		pass
+
+
+
+class IkFkBlendRig( BlendRig ) :
+	PARTNAME = 'ikfkBlendRig'
+
+	def __init__( self ) :
+		pass
+
+	def create( self, _jointchain=None ) :
+		pass
+
+		

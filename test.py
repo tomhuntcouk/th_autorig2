@@ -5,6 +5,7 @@ from chain_basic import Jointchain
 from rig_basic import *
 from rig_ikfk import *
 from skeleton import RigJoint
+from controls import RigControl
 
 import settings
 
@@ -51,6 +52,9 @@ def main() :
 	for group in settings.staticgroupsdict.values() :
 		pm.group( n=group, empty=True, world=True )
 
+	for control in settings.staticcontrols.values() :
+		RigControl( n=control )
+
 	l_arm = Jointchain.from_startend( 
 		# 'left_arm',
 		pm.PyNode( 'leftUpperArm_1_j' ), 
@@ -71,11 +75,14 @@ def main() :
 		( 1, 2 )
 	)
 
-	fk_rig = FkRig()	
-	l_arm_rig.add_child( fk_rig )
-	# print fk_rig.tree_parent()
-	fk_rig.create()
-	fk_rig.tidy()
+	# fk_rig = FkRig()
+	# l_arm_rig.add_child( fk_rig )
+	# fk_rig.create()
+	# fk_rig.tidy()
+
+	blendrig = BlendRig()
+	l_arm_rig.add_child( blendrig )
+	blendrig.create()
 
 
 
