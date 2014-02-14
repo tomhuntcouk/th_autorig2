@@ -40,6 +40,7 @@ class BindRig( TreeNode ) :
 		pass
 
 
+
 class BasicRig( TreeNode ) :
 	PARTNAME = 'basicRig'
 	
@@ -66,6 +67,8 @@ class BasicRig( TreeNode ) :
 			group = groups[-1]
 
 			obj.setParent( group )
+
+
 
 class BlendRig( TreeNode ) :
 	PARTNAME = 'blendRig'

@@ -37,10 +37,10 @@ class IkRig( BasicRig ) :
 	PARTNAME = 'ikRig'
 
 	def __init__( self ) :
-		pass
+		super( IkRig, self ).__init__()
 
 	def create( self, _jointchain=None ) :
-		pass
+		super( FkRig, self ).create( _jointchain )
 
 
 
