@@ -63,13 +63,27 @@ def renumber_from_name( _name, _number ) :
 def get_tag( _tag ) :
 	return settings.tagdict[ _tag ]
 
-def name_from_tags( _obj, *_tags ) :	
+def name_from_tags( _obj, *_tags, **kwargs ) :		
+	try : _replacelast = kwargs[ '_replacelast' ]
+	except : _replacelast = True	
+
 	try : name = _obj.name()
 	except : name = _obj
-	namesplit = name.rsplit( settings.name_string_delimeter, 1 )
+	
+	namesplit = [ name ]
+	if _replacelast :		
+		namesplit = name.rsplit( settings.name_string_delimeter, 1 )
+	
 	ret = namesplit[0]
+	# ret = ''
 	for tag in _tags :
 		if tag : ret += settings.name_string_delimeter + get_tag( tag )
+	
+	# ret = settings.name_string_delimeter.join( set( ret.split( settings.name_string_delimeter ) ) )
+	# r = ret.split( settings.name_string_delimeter )
+	# r = list(set(r))
+	# ret = settings.name_string_delimeter.join( r )
+	# return namesplit[0] + ret
 	return ret
 
 
@@ -78,20 +92,25 @@ def name_from_tags( _obj, *_tags ) :
 #########################################################
 
 
-def make_groups_from_path_list( _pathlist, _topgroup=None ) :
+def make_groups_from_path_list( _pathlist, _topgroup=None, _stopbefore=0 ) :
 	_ret = []
 	lastgroup = pm.PyNode( _topgroup )
-	try :
-		name = _pathlist[0].name
-	except :
-		err( 'It appears that %s does not have a name attribute. Make sure it is a BindChain instance.' % ( _pathlist[0] ) )
-		return False
-	for level in _pathlist :
+	
+	for i, level in enumerate( _pathlist ) :
+
+		if( i > len( _pathlist ) - abs( _stopbefore ) ) :
+			break
+
+		try : name = _pathlist[0].name
+		except : name = level
+
+		try : partname = level.PARTNAME
+		except : partname = 'NULL'
+		
 		pm.select( None )
-		groupname = '%s%s%s' % ( name, settings.name_string_delimeter, level.PARTNAME )
-		# groupname = name_from_tags( groupname, 'group' )
-		
-		
+		groupname = '%s%s%s' % ( name, settings.name_string_delimeter, partname )
+		groupname = name_from_tags( groupname, 'group', _replacelast=False )
+				
 		# check if the group exists and return the previosuly created group ifit does
 		# otherwise create a new group
 		group = None
@@ -110,6 +129,24 @@ def make_groups_from_path_list( _pathlist, _topgroup=None ) :
 	pm.select( lastgroup )
 	return _ret
 
+def get_full_class_inheritance( _cls ) :
+	bases = list( _cls.__bases__ )
+	for base in bases :
+		bases.extend( get_full_class_inheritance( base ) )
+	return bases
+
+def is_subclass( _obj, _class ) :
+	isSubclass = False	
+	bases = get_full_class_inheritance( _obj.__class__ )
+	classname = _class.__name__
+	for base in bases :
+		basename = base.__name__
+		if( basename.split( '.' )[-1] == classname ) :
+			isSubclass = True
+		# print base, _class
+		# if( base == _class ) : isSubclass = True
+
+	return isSubclass
 
 #########################################################
 # math

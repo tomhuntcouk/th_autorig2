@@ -14,26 +14,27 @@ staticgroupsdict = {
 }
 
 staticcontrols = {
-	'ikfkblend'		: 'ikfkBlend_CNTRL',
+	'ikfkblend'		: 'ikfkBlend',
 }
 
 tagdict = {
 	None				: '',
 	'fkRig'				: 'FKJ',
-	'IkChainrig'		: 'IKJ',
+	'ikRig'				: 'IKJ',
 	'blendRig'			: 'BJ',
 	'control'			: 'CNTRL',	
-	'IkHandle'			: 'HND',
-	'IkEffector'		: 'EFF',
-	'AnimCurveUL'		: 'ACUL',
-	'MultiplyDivide'	: 'MULTDIV',
-	'PlusMinusAverage'	: 'PMA',
+	'ikhandle'			: 'HND',
+	'ikeffector'		: 'EFF',
+	'animcurveUL'		: 'ACUL',
+	'multiplydivide'	: 'MULTDIV',
+	'plusminusaverage'	: 'PMA',
 	'sdk' 				: 'SDK',
 	'zero' 				: 'ZERO',
 	'ik' 				: 'IK',
-	'ikdriver' 			: 'DRIVER',
+	'driver' 			: 'DRIVER',
 	'fk' 				: 'FK',
 	'polevector' 		: 'PV',
 	'ikfkswitcher' 		: 'IKFK',
 	'group'				: 'GRP',
+	'blend'				: 'BLEND'
 }

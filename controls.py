@@ -42,7 +42,7 @@ class BaseControl( pm.Transform, TreeNode ) :
 			name = kwargs.get( 'name' )
 		else :
 			name = cls.PARTNAME
-		name = utils.name_from_tags( name, 'control' )
+		name = utils.name_from_tags( name, 'control', _replacelast=False )
 		kwargs[ 'name' ] = name
 		
 		if 'st' in kwargs :

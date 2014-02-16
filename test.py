@@ -52,8 +52,14 @@ def main() :
 	for group in settings.staticgroupsdict.values() :
 		pm.group( n=group, empty=True, world=True )
 
+	staticcontrolgroup = utils.make_groups_from_path_list( 
+		[ 'static' ],
+		pm.PyNode( settings.staticgroupsdict[ 'controls' ] )
+	)[0]
+
 	for control in settings.staticcontrols.values() :
-		RigControl( n=control )
+		c = RigControl( n=control )
+		c.zero_group().setParent( staticcontrolgroup )
 
 	l_arm = Jointchain.from_startend( 
 		# 'left_arm',
@@ -75,14 +81,26 @@ def main() :
 		( 1, 2 )
 	)
 
-	# fk_rig = FkRig()
-	# l_arm_rig.add_child( fk_rig )
-	# fk_rig.create()
+	fk_rig = FkRig()
+	l_arm_rig.add_child( fk_rig )
+	fk_rig.create()
 	# fk_rig.tidy()
+
+
+	ik_rig = IkRig()
+	l_arm_rig.add_child( ik_rig )
+	ik_rig.create()	
+	# ik_rig.tidy()
 
 	blendrig = BlendRig()
 	l_arm_rig.add_child( blendrig )
 	blendrig.create()
+	blendrig.add_child( fk_rig )
+	blendrig.add_child( ik_rig )
+	blendrig.connect_rigs()
+
+	l_arm_rig.tidy()
+
 
 
 

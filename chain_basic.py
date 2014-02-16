@@ -50,7 +50,7 @@ class Jointchain( TreeNode ) :
  		rigjoint = self.rigjoints[ _pos ]
  		self.minorrigjoints[ rigjoint ] = rigjoint.split( _numsplits )
 
- 	def duplicate_jointchain( self, _class=None, _tag=None, _simple=False ) :
+ 	def duplicate_jointchain( self, *_tags, **kwargs ) :
  		# make a deep copy of self
 		# loop through bones and replace rigjoint with a new one
 		# loop through minorbones and replace minorbone with bone.duplicate	
@@ -58,12 +58,17 @@ class Jointchain( TreeNode ) :
 		# we could duplicate the top joint and then compare with original to find the minorjoints
 		# creating each joint individually seems to be more direct though
 
+		try :
+			_simple = kwargs[ '_simple' ]
+		except :
+			_simple = False
+
 		dupjointchain = copy.deepcopy( self )
 		dupjointchain.copymother = self
 		lastrigjoint = None
 		pm.select( None )
 		for i, rigjoint in enumerate( dupjointchain.rigjoints ) :
-			duprigjointname = utils.name_from_tags( rigjoint, _class, _tag )
+			duprigjointname = utils.name_from_tags( rigjoint, *_tags )
 			duprigjoint = rigjoint.duplicate( n=duprigjointname )[0]
 			dupjointchain.rigjoints[i] = duprigjoint
 			duprigjoint.setParent( lastrigjoint )
@@ -74,7 +79,7 @@ class Jointchain( TreeNode ) :
 				dupjointchain.minorrigjoints[ duprigjoint ] = []
 				# duplicate each minorrigjoint, add it to it's duplicated major rigjoint array of minor rigjoints				
 				for minorrigjoint in dupjointchain.minorrigjoints[ rigjoint ] :
-					dupminorrigjointname = utils.name_from_tags( minorrigjoint, _class, _tag )
+					dupminorrigjointname = utils.name_from_tags( minorrigjoint, *_tags )
 					dupminorrigjoint = minorrigjoint.duplicate( n=dupminorrigjointname )[0]
 					dupjointchain.minorrigjoints[ duprigjoint ].append( dupminorrigjoint)
 					dupminorrigjoint.setParent( lastrigjoint )
@@ -83,7 +88,24 @@ class Jointchain( TreeNode ) :
 				del dupjointchain.minorrigjoints[ rigjoint ]
 				
 		self.duplicates.append( dupjointchain )
+		
+		# we'll reset the partname here in case the mother jointchain hs had its changed
+		dupjointchain.PARTNAME = dupjointchain.__class__.PARTNAME
 		return dupjointchain
+
+	def major_joints( self ) :
+		return self.rigjoints
+
+	def all_joints( self ) :
+		ret = []
+		for rigjoint in self.rigjoints :
+			ret.append( rigjoint )
+			try :
+				for minorrigjoint in self.minorrigjoints[ rigjoint ] :
+					ret.append( minorrigjoint )
+			except :
+				pass
+		return ret
 
 
 	############################################################
