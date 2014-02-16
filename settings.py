@@ -36,5 +36,8 @@ tagdict = {
 	'polevector' 		: 'PV',
 	'ikfkswitcher' 		: 'IKFK',
 	'group'				: 'GRP',
-	'blend'				: 'BLEND'
+	'blend'				: 'BLEND',
+	'rotateaddin'		: 'RADDIN',
+	'transformaddin'	: 'TADDIN',
+	'scaleaddin'		: 'SADDIN',
 }

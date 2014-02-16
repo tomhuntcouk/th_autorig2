@@ -4,6 +4,7 @@ import pprint
 from chain_basic import Jointchain
 from rig_basic import *
 from rig_ikfk import *
+from addin_limbs import *
 from skeleton import RigJoint
 from controls import RigControl
 
@@ -81,25 +82,52 @@ def main() :
 		( 1, 2 )
 	)
 
-	fk_rig = FkRig()
-	l_arm_rig.add_child( fk_rig )
-	fk_rig.create()
-	# fk_rig.tidy()
+	# torun = 'ik'
+	torun = 'fk'
+	# torun = 'blend'
+	shouldtidy = False
 
+	if( torun == 'fk' ) :
 
-	ik_rig = IkRig()
-	l_arm_rig.add_child( ik_rig )
-	ik_rig.create()	
-	# ik_rig.tidy()
+		fk_rig = FkRig()
+		l_arm_rig.add_child( fk_rig )
+		fk_rig.create()
+		fk_rig_twist = DistributedTwistAddin()
+		fk_rig.add_child( fk_rig_twist )
+		fk_rig_twist.create()
 
-	blendrig = BlendRig()
-	l_arm_rig.add_child( blendrig )
-	blendrig.create()
-	blendrig.add_child( fk_rig )
-	blendrig.add_child( ik_rig )
-	blendrig.connect_rigs()
+		fkw = pm.PyNode('leftWrist_FKJ')
+		palm = pm.PyNode('leftPalm_j')
+		palm.setParent(fkw)
 
-	l_arm_rig.tidy()
+		if shouldtidy : fk_rig.tidy()
+
+	elif( torun == 'ik' ) :
+
+		ik_rig = IkRig()
+		l_arm_rig.add_child( ik_rig )
+		ik_rig.create()
+		ik_rig_twist = DistributedTwistAddin()
+		ik_rig.add_child( ik_rig_twist )
+		ik_rig_twist.create()
+		
+
+		ikw = pm.PyNode('leftWrist_IKJ')
+		palm = pm.PyNode('leftPalm_j')
+		palm.setParent(ikw)
+
+		if shouldtidy : ik_rig.tidy()
+
+	elif( torun == 'blend' ) :
+
+		blendrig = BlendRig()
+		l_arm_rig.add_child( blendrig )
+		blendrig.create()
+		blendrig.add_child( fk_rig )
+		blendrig.add_child( ik_rig )
+		blendrig.connect_rigs()
+
+		if shouldtidy : l_arm_rig.tidy()
 
 
 

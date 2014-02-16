@@ -19,7 +19,7 @@ clone the PyMel Github repo to resolve the problem
 # print pm.factories.VirtualClassManager.register
 
 
-class BaseJoint( pm.Joint ) :
+class BaseJoint( pm.Joint, object ) :
 	PARTNAME = 'BaseJoint'
 
 	@classmethod

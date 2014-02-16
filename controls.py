@@ -6,7 +6,9 @@ from tree import TreeNode
 import utils
 import settings
 
-class BaseControl( pm.Transform, TreeNode ) :
+relatedjointattr = 'th_related_joint'
+
+class BaseControl( pm.Transform, TreeNode, object ) :
 	PARTNAME = 'baseControl'
 
 	__shapedict = {
@@ -78,8 +80,11 @@ class BaseControl( pm.Transform, TreeNode ) :
 	def _postCreateVirtual( cls, node, **kwargs ) :
 		node = pm.PyNode( node )
 
-		node.addAttr( settings.attrname, dt='string' )
-		node.setAttr( settings.attrname, cls.PARTNAME )
+		utils.add_set_attr( node , settings.attrname, cls.PARTNAME )
+		utils.add_set_attr( node , relatedjointattr, '' )
+
+		# node.addAttr( settings.attrname, dt='string' )
+		# node.setAttr( settings.attrname, cls.PARTNAME )
 
 
 
@@ -110,5 +115,7 @@ class RigControl( BaseControl ) :
 		zerogroup = self.zero_group()
 		zerogroup.setTranslation( _obj.getTranslation( space='world' ), space='world' )
 		zerogroup.setRotation( _obj.getRotation( space='world' ), space='world' )
+		# record which object we positioned it to
+		utils.add_set_attr( self, relatedjointattr, _obj )
 
 pm.factories.registerVirtualClass( RigControl, nameRequired=False )

@@ -19,6 +19,13 @@ tidydict = {
 
 
 class BaseRig( TreeNode ) :
+	PARTNAME = 'bindRig'
+
+	# def __init__( self ) :
+	# 	super( BaseRig, self ).__init__()
+	# 	self.mainjointchain = None
+
+
 	def tidy( self ) :
 		allrigs = self.tree_children( '.*Rig' )
 		allother = list( set( self.tree_children() ) - set( allrigs ) )
@@ -28,10 +35,12 @@ class BaseRig( TreeNode ) :
 
 		for child in allother :
 			# create the group hierarchy to the required level and parent to it
-			# we'll use __tidydict to specify which object to parent
+			# we'll use tidydict to specify which object to parent
 
 			try : partname = child.tree_value().PARTNAME
 			except : partname = 'treeNode'
+			if( not partname in tidydict.keys() )  :
+				partname = 'treeNode'
 
 			topgroup = tidydict[ partname ][0]
 			obj = eval( 'child' + tidydict[ partname ][1] )
@@ -47,6 +56,9 @@ class BaseRig( TreeNode ) :
 					obj.setParent( group )
 			except RuntimeError, e :
 				utils.err( e.message )
+			except AttributeError, e :
+				# utils.err( e.message )
+				pass
 
 
 
