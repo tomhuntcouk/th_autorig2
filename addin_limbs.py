@@ -54,16 +54,18 @@ class DistributedTwistAddin( BaseAddin ) :
 
 				# control = None
 				# for obj in rigjoint.history() :
-				# 	if( issubclass( obj.__class__, RigControl ) ) :
+				# 	bases = [ obj.__class__ ] + utils.get_full_class_inheritance( obj.__class__ )
+				# 	bases = [ x.__name__ for x in bases ]
+				# 	if( obj.__class__.__name__ in bases ) :
 				# 		control = obj
-				# 		break
+				# 		continue
+
 
 				# WARNING
 				# this way of getting the control (or top level controlling transform) 
 				# is likely to not be accurate - a better way needs to be found
-
-				# we'll try to make sure that the control we get is in fact a control transform
 				control = rigjoint.history( levels=2 )[-1]
+				# we'll try to make sure that the control we get is in fact a control transform				
 				controlisok = False
 				if( issubclass( control.__class__, pm.nodetypes.Transform ) )	:
 					if( not issubclass( control.__class__, pm.nodetypes.Joint ) ) :
