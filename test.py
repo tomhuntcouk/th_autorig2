@@ -42,7 +42,7 @@ def main() :
 	# vclass.testJoint()
 	# return
 
-	l = 'file -f -options "v=0;"  -esn 	false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Dropbox/SCRIPTS/python/th_autorig/assets/autorig_test.ma", "mayaAscii");'
+	l = 'file -f -options "v=0;"  -esn 	false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Development/th_autorig/assets/autorig_test.ma", "mayaAscii");'
 	pm.mel.eval( l )
 	# print pm.api.MFnDependencyNode
 	# RigJoint( name='test' )	

@@ -49,6 +49,7 @@ class BaseRig( TreeNode ) :
 				utils.err( e.message )
 
 
+
 class BindRig( BaseRig ) :
 	PARTNAME = 'bindRig'
 	
@@ -100,19 +101,23 @@ class BlendRig( BaseRig ) :
 			self.add_child( self.tree_root().masterjointchain.duplicate_jointchain( self.PARTNAME ) )
 		else :
 			self.add_child( _jointchain )
+		
+	def connect_rigs( self, _blendcontrol=None ) :
+
+		# get the object the blend attr should be added to
+		blendcontrol = _blendcontrol
+		if( not blendcontrol ) :
+			blendcontrolname = utils.name_from_tags( settings.staticcontrols[ 'ikfkblend' ], 'control' )
+			blendcontrol = pm.PyNode( blendcontrolname )
 
 		try :
 			# create the blend attr
-			blendcontrolname = utils.name_from_tags( settings.staticcontrols[ 'ikfkblend' ], 'control' )
-			blendcontrol = pm.PyNode( blendcontrolname )
 			blendattrname = utils.name_from_tags( self.tree_root().name, 'blend' )
 			self.blendattr = utils.add_set_attr( blendcontrol, blendattrname, 0.0 )
-			return True
 		except :
 			utils.err( 'Could not create blend attribute on %s' % ( blendcontrol ) )
 			return False
 
-	def connect_rigs( self ) :
 		# blend between rigs onto blendjointchain
 
 		jointchains = self.tree_children( 'jointchain' )
@@ -127,7 +132,7 @@ class BlendRig( BaseRig ) :
 		self.blendattr.setMin( 0 )
 		self.blendattr.setMax( len( self.tree_children( '.*Rig' ) ) - 1 )
 
-		for i, rig in enumerate( rigs ) :			
+		for i, rig in enumerate( rigs ) :	
 			for jointchain in rig.tree_children( 'jointchain' ) :
 				rigjoints = jointchain.all_joints()
 				if( len( rigjoints ) != len( blendjoints ) ) :
@@ -176,8 +181,4 @@ class BlendRig( BaseRig ) :
 						k += 1
 
 					pma.output3D >> blendjoint.rotate
-
-	# def tidy( self ) :
-	# 	for rig in self.tree_children( '.*Rig' ) :
-	# 		rig.tidy()
 
