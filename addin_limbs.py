@@ -44,44 +44,33 @@ class DistributedTwistAddin( BaseAddin ) :
 
 		for jointchain in jointchains :
 
-			if( len( jointchain.duplicates ) > 0 ) :
-				continue
+			# if( len( jointchain.duplicates ) > 0 ) :
+			# 	continue
 
 			for i, rigjoint in enumerate( jointchain.rigjoints ) :			
 				# leave the last in the jointchain as it is guaranteed to not have any minorjoints
 				# before it to share its rotation with
-				if( i == 0 ) : continue				
+				if( i == 0 ) : continue
 
-				# control = None
-				# for obj in rigjoint.history() :
-				# 	bases = [ obj.__class__ ] + utils.get_full_class_inheritance( obj.__class__ )
-				# 	bases = [ x.__name__ for x in bases ]
-				# 	if( obj.__class__.__name__ in bases ) :
-				# 		control = obj
-				# 		continue
-
-
-				# WARNING
-				# this way of getting the control (or top level controlling transform) 
-				# is likely to not be accurate - a better way needs to be found
-				control = rigjoint.history( levels=2 )[-1]
-				# we'll try to make sure that the control we get is in fact a control transform				
-				controlisok = False
-				if( issubclass( control.__class__, pm.nodetypes.Transform ) )	:
-					if( not issubclass( control.__class__, pm.nodetypes.Joint ) ) :
-						controlisok = True
-
-				if( not controlisok ) :
-					# utils.wrn( '%s does not seem to be a control object. Skipping...' % ( control ) )
+				if( rigjoint not in jointchain.minorrigjoints.keys() ) :
 					continue
 
-				# print rigjoint, control
-				# continue
+				# # WARNING
+				# # this way of getting the control (or top level controlling transform)
+				# # is likely to not be accurate - a better way needs to be found
+				control = None
+				for transform in rigjoint.listHistory( type='transform' ) :
+					if( transform.getShape() ) :
+						control = transform
+						break
+
+				if( not control ) :
+					continue
+				
 
 				minorjoints = jointchain.minorrigjoints[ jointchain.rigjoints[ i - 1 ] ]
-
-				# source = plug.inputs()[0]
-				# print source.getTargetList()
+				# print minorjoints
+				# continue
 				
 				# create a multdiv to temper control's rotation by 1/len(minorjoints)
 				multdiv = pm.nodetypes.MultiplyDivide( n=utils.name_from_tags( 
