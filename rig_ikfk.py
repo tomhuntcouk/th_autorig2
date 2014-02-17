@@ -3,7 +3,7 @@ import pymel.core.nodetypes as pn
 
 from rig_basic import *
 import controls
-import utils
+import utils, settings
 
 
 
@@ -25,6 +25,7 @@ class FkRig( BasicRig ) :
 
 		for rigjoint in rigjoints :
 			control = controls.RigControl( n=rigjoint.name() )
+			control.setRotationOrder( settings.rotationorder, False )
 			control.position_to_object( rigjoint )
 			pm.orientConstraint( control, rigjoint )
 			

@@ -153,6 +153,14 @@ def is_subclass( _obj, _class ) :
 #########################################################
 
 
+def rotation_order_to_vectors( _rotationorder ) :
+	rotationorderdict = {
+		'XYZ' : ( ( 1, 0, 0 ), ( 0, 1, 0 ) ),
+		'YZX' : ( ( 0, 1, 0 ), ( 0, 0, 1 ) ),
+		'ZXY' : ( ( 0, 0, 1 ), ( 1, 0, 0 ) ),
+	}
+	return rotationorderdict[ _rotationorder.upper() ]
+
 def lerp( p1, p2, t ) :
 	if( type( p1 ) == type( p2 ) ) :
 		if( type( p1 ) == pm.datatypes.Vector ) :

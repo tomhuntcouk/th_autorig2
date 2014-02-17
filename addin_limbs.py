@@ -1,7 +1,8 @@
 import pymel.all as pm
 
 from tree import TreeNode
-import utils
+import utils, settings
+
 
 class BaseAddin( TreeNode ) :
 	PARTNAME = 'BaseAddin'
@@ -27,6 +28,7 @@ class DistributedTwistAddin( BaseAddin ) :
 		super( DistributedTwistAddin, self ).__init__()
 		_primaryaxis = _primaryaxis.lower().replace( 'rotate', '' )
 		_primaryaxis = _primaryaxis.upper()
+		_primaryaxis = settings.rotationorder[0].upper()
 		self.primaryaxis = _primaryaxis
 		self.transformation = 'rotate'
 
@@ -81,8 +83,8 @@ class DistributedTwistAddin( BaseAddin ) :
 				
 
 
-class SquashStretchChainAddin( BaseAddin )
-	PARTNAME = 'distributedTwistAddin'
+class SquashStretchChainAddin( BaseAddin ) :
+	PARTNAME = 'squashStretchChainAddin'
 	AFFECTEDATTRS = [
 		'scaleX',
 		'scaleY',

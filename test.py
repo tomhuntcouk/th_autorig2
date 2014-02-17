@@ -29,6 +29,11 @@ th_autorig.test.main()
 """
 ##############################################
 
+NOTES:
+
+spline ik - bind spline to joints rather than clusters
+			copy start and end joints from chain to maintain orient etc
+
 
 
 ##############################################
@@ -82,8 +87,8 @@ def main() :
 		( 1, 2 )
 	)
 
-	torun = 'ik'
-	# torun = 'fk'
+	# torun = 'ik'
+	torun = 'fk'
 	# torun = 'blend'
 	shouldtidy = False
 
@@ -107,9 +112,9 @@ def main() :
 		ik_rig = IkRig()
 		l_arm_rig.add_child( ik_rig )
 		ik_rig.create()
-		ik_rig_twist = DistributedTwistAddin()
-		ik_rig.add_child( ik_rig_twist )
-		ik_rig_twist.create()
+		# ik_rig_twist = DistributedTwistAddin()
+		# ik_rig.add_child( ik_rig_twist )
+		# ik_rig_twist.create()
 		
 
 		ikw = pm.PyNode('leftWrist_IKJ')
