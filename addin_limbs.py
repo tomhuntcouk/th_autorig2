@@ -44,9 +44,6 @@ class DistributedTwistAddin( BaseAddin ) :
 
 		for jointchain in jointchains :
 
-			# if( len( jointchain.duplicates ) > 0 ) :
-			# 	continue
-
 			for i, rigjoint in enumerate( jointchain.rigjoints ) :			
 				# leave the last in the jointchain as it is guaranteed to not have any minorjoints
 				# before it to share its rotation with
@@ -67,11 +64,8 @@ class DistributedTwistAddin( BaseAddin ) :
 				if( not control ) :
 					continue
 				
-
 				minorjoints = jointchain.minorrigjoints[ jointchain.rigjoints[ i - 1 ] ]
-				# print minorjoints
-				# continue
-				
+
 				# create a multdiv to temper control's rotation by 1/len(minorjoints)
 				multdiv = pm.nodetypes.MultiplyDivide( n=utils.name_from_tags( 
 					rigjoint, 'rotateaddin', 'multiplydivide',
@@ -85,6 +79,22 @@ class DistributedTwistAddin( BaseAddin ) :
 				for joint in [ rigjoint ] + minorjoints :
 					multdiv.attr( 'output' + self.primaryaxis ) >> joint.attr( attribute )
 				
+
+
+class SquashStretchChainAddin( BaseAddin )
+	PARTNAME = 'distributedTwistAddin'
+	AFFECTEDATTRS = [
+		'scaleX',
+		'scaleY',
+		'scaleZ',
+	]
+
+	def __init__( self, _primaryaxis='x' ) :
+		super( DistributedTwistAddin, self ).__init__()
+		_primaryaxis = _primaryaxis.lower().replace( 'rotate', '' )
+		_primaryaxis = _primaryaxis.upper()
+		self.primaryaxis = _primaryaxis
+		self.transformation = 'rotate'
 
 
 
