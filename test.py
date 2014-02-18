@@ -87,9 +87,11 @@ def main() :
 		( 1, 2 )
 	)
 
-	torun = 'ik'
-	# torun = 'fk'
+	# torun = 'ik'
+	torun = 'fk'
 	# torun = 'blend'
+	twist = False
+	stretch = True
 	shouldtidy = False
 
 	if( torun == 'fk' ) :
@@ -97,9 +99,14 @@ def main() :
 		fk_rig = FkRig()
 		l_arm_rig.add_child( fk_rig )
 		fk_rig.create()
-		fk_rig_twist = DistributedTwistAddin()
-		fk_rig.add_child( fk_rig_twist )
-		fk_rig_twist.create()
+		if twist :
+			fk_rig_twist = DistributedTwistAddin()
+			fk_rig.add_child( fk_rig_twist )
+			fk_rig_twist.create()
+		if stretch :
+			fk_stretch = SquashStretchChainAddin()
+			fk_rig.add_child( fk_stretch )
+			fk_stretch.create()
 
 		fkw = pm.PyNode('leftWrist_FKJ')
 		palm = pm.PyNode('leftPalm_j')
@@ -112,17 +119,18 @@ def main() :
 		ik_rig = IkRig()
 		l_arm_rig.add_child( ik_rig )
 		ik_rig.create()
-		ik_rig_twist = DistributedTwistAddin()
-		ik_rig.add_child( ik_rig_twist )
-		ik_rig_twist.create()
-		# ik_stretch = SquashStretchChainAddin()
-		# ik_rig.add_child( ik_stretch )
-		# ik_stretch.create()
+		if twist :
+			ik_rig_twist = DistributedTwistAddin()
+			ik_rig.add_child( ik_rig_twist )
+			ik_rig_twist.create()
+		if stretch :
+			ik_stretch = SquashStretchChainAddin()
+			ik_rig.add_child( ik_stretch )
+			ik_stretch.create()
 		
-
-		# ikw = pm.PyNode('leftWrist_IKJ')
-		# palm = pm.PyNode('leftPalm_j')
-		# palm.setParent(ikw)
+		ikw = pm.PyNode('leftWrist_IKJ')
+		palm = pm.PyNode('leftPalm_j')
+		palm.setParent(ikw)
 
 		if shouldtidy : ik_rig.tidy()
 

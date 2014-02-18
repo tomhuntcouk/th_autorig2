@@ -111,6 +111,11 @@ class SquashStretchChainAddin( BaseAddin ) :
 
 		super( SquashStretchChainAddin, self ).create()
 
+		for relevantobject in self.relevant_objects_generator( self.jointchains ) :
+			print relevantobject.control
+
+
+
 
 class NoFlipPoleVectorAddin( BaseAddin ) :
 	pass
