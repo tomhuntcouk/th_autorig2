@@ -78,8 +78,8 @@ class RigJoint( BaseJoint ) :
 			_rotateOrder = settings.rotationorder
 
 		# check we have a child to aim to and decide of aim vectors
-		aimvector = utils.rotation_order_to_vectors( _rotateOrder )[0]
-		upvector = utils.rotation_order_to_vectors( _rotateOrder )[1]
+		aimvector = utils.aim_axis_to_vectors( _rotateOrder )[0]
+		upvector = utils.aim_axis_to_vectors( _rotateOrder )[1]
 
 		aim = aimvector
 		children = self.getChildren()

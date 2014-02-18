@@ -6,7 +6,7 @@ should_error = False
 name_string_delimeter = '_'
 attrname = 'th_autorig_nodecheck'
 
-rotationorder = 'YZX'
+rotationorder = 'XYZ'
 
 staticgroupsdict = {
 	'geometry'		: 'GEOMETRY_GRP',

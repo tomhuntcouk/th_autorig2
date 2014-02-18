@@ -25,12 +25,17 @@ class FkRig( BasicRig ) :
 
 		for rigjoint in rigjoints :
 			control = controls.RigControl( n=rigjoint.name() )
-			control.setRotationOrder( settings.rotationorder, False )
+			control.setRotationOrder( 
+				utils.aim_axis_to_rotate_order( settings.rotationorder ),
+				False
+			)
 			control.position_to_object( rigjoint )
 			pm.orientConstraint( control, rigjoint )
 			
 			if( lastcontrol ) :
-				pm.parentConstraint( lastcontrol, control, mo=True )			
+				pm.parentConstraint( lastcontrol, control.zero_group(), mo=True )
+				# pm.pointConstraint( lastcontrol, control, mo=True )
+				# pm.orientConstraint( lastcontrol, control, mo=True )
 			lastcontrol = control
 			
 			self.add_child( control )
