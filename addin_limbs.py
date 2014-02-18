@@ -5,12 +5,16 @@ import utils, settings
 
 
 class RelevantObjects( object ) :
-	def __init__( self, _jointchain, _rigjoint, _minorrigjoints, _control ) :
+	def __init__( self, _jointchain, _rigjointid, _rigjoint, _minorrigjoints, _control ) :
 		super( RelevantObjects, self ).__init__()
 		self.jointchain = _jointchain
+		self.rigjointid = _rigjointid
 		self.rigjoint = _rigjoint
 		self.minorrigjoints = _minorrigjoints
 		self.control = _control
+
+	def __str__( self ) :
+		return 'RelevantObjects: %s %s %s' % ( self.rigjointid, self.rigjoint, self.control )
 
 
 
@@ -22,8 +26,10 @@ class BaseAddin( TreeNode ) :
 		super( BaseAddin, self ).__init__()
 		self.attribute = ''
 		self.jointchains = None
+		self.primaryaxis = None
 
 	def relevant_objects_generator( self, _jointchains ) :
+		ret = []
 		for jointchain in _jointchains :
 			for i, rigjoint in enumerate( jointchain.rigjoints ) :
 				# leave the last in the jointchain as it is guaranteed to not have any minorjoints
@@ -46,9 +52,14 @@ class BaseAddin( TreeNode ) :
 
 				minorjoints = jointchain.minorrigjoints[ jointchain.rigjoints[ i - 1 ] ]
 
-				yield RelevantObjects( jointchain, rigjoint, minorjoints, control )
+				ret.append( RelevantObjects( jointchain, i, rigjoint, minorjoints, control ) )
+		return ret
 
-	def create( self ) :
+	def create( self, _primaryaxis=None ) :
+		if not _primaryaxis : _primaryaxis = settings.rotationorder[0].upper()
+		self.primaryaxis = _primaryaxis
+		self.transformation = self.AFFECTEDATTR
+
 		self.attribute = self.transformation + self.primaryaxis
 		# if( attribute not in self.AFFECTEDATTRS ) :
 		# 	utils.err( '%s not in DistributedTwistAddin.AFFECTEDATTRS. Skipping...' % ( self.primaryaxis ) )
@@ -62,11 +73,7 @@ class DistributedTwistAddin( BaseAddin ) :
 	AFFECTEDATTR = 'rotate'
 
 	def __init__( self, _primaryaxis=None ) :
-		super( DistributedTwistAddin, self ).__init__()
-		if not _primaryaxis :
-			_primaryaxis = settings.rotationorder[0].upper()
-		self.primaryaxis = _primaryaxis
-		self.transformation = self.AFFECTEDATTR
+		super( DistributedTwistAddin, self ).__init__()		
 
 	def create( self ) :
 		# distribute the twist along the axis of each major joint
@@ -96,10 +103,6 @@ class SquashStretchChainAddin( BaseAddin ) :
 
 	def __init__( self, _primaryaxis=None ) :
 		super( SquashStretchChainAddin, self ).__init__()
-		if not _primaryaxis :
-			_primaryaxis = settings.rotationorder[0].upper()
-		self.primaryaxis = _primaryaxis
-		self.transformation = self.AFFECTEDATTR
 
 	def create( self ) :
 
@@ -108,17 +111,34 @@ class SquashStretchChainAddin( BaseAddin ) :
 		of the distnace between
 		"""
 
-		# for each control
-		# distance between last joint with a control / fist joint if there is none
-		# get distance between last/first joint
-		# distance between node
+		
+						
 		# if distnace between node > distance
+		# calculate scale factor
+		# and now per joint/minorjoint
 		# scale each joint (including minorjoints) along primary axis
 
 		super( SquashStretchChainAddin, self ).create()
 
+		lastrigjoint = None
+		# for each control
 		for relevantobject in self.relevant_objects_generator( self.jointchains ) :
-			print relevantobject.control
+			# get rest distance between last joint with a control / fist joint if there is none
+			if not lastrigjoint : lastrigjoint = ( 0, relevantobject.jointchain.rigjoints[0] )
+			length = relevantobject.jointchain.length_between( lastrigjoint[0], relevantobject.rigjointid )
+
+			# distance between node
+			distancebetween = pm.nodetypes.DistanceBetween()
+			lastrigjoint[1].worldMatrix >> distancebetween.inMatrix1
+			lastrigjoint[1].rotatePivotTranslate >> distancebetween.point1
+			relevantobject.control.worldMatrix >> distancebetween.inMatrix2
+			relevantobject.control.rotatePivotTranslate >> distancebetween.point2
+
+			md = pm.nodetypes.MultiplyDivide()
+			distancebetween.distance >> md.input1X
+
+
+			lastrigjoint = ( relevantobject.rigjointid, relevantobject.rigjoint )
 
 
 

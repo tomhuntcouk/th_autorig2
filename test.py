@@ -87,8 +87,8 @@ def main() :
 		( 1, 2 )
 	)
 
-	torun = 'ik'
-	# torun = 'fk'
+	# torun = 'ik'
+	torun = 'fk'
 	# torun = 'blend'
 	twist = False
 	stretch = True
