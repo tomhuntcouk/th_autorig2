@@ -102,6 +102,12 @@ class SquashStretchChainAddin( BaseAddin ) :
 		self.transformation = self.AFFECTEDATTR
 
 	def create( self ) :
+
+		"""
+		we will need to know if any more controls are coming up so we know which joint to use as the start
+		of the distnace between
+		"""
+
 		# for each control
 		# distance between last joint with a control / fist joint if there is none
 		# get distance between last/first joint
