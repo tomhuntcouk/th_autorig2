@@ -83,14 +83,14 @@ class RigJoint( BaseJoint ) :
 
 		aim = aimvector
 		children = self.getChildren()
-		parent = self.getParent()
+		parent = self.getParent()		
 		if( not parent ) : parent = self
 		if( len( children ) < 1 ) :
 			if( not _orientchildless ) :
 				utils.wrn( '%s has no children. Skipping orient...' % ( self.name() ) )
 				return False
 			else :
-				aim = aimvector * ( -1, -1, -1 )		
+				aim = [ a * b for a, b in zip( aimvector, [-1] * 3 ) ]
 
 		pm.select( None )
 
