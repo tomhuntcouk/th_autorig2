@@ -28,13 +28,13 @@ class BaseAddin( TreeNode ) :
 		self.jointchains = None
 		self.primaryaxis = None
 
-	def relevant_objects_generator( self, _jointchains ) :
+	def _relevant_objects_generator( self, _jointchains ) :
 		ret = []
 		for jointchain in _jointchains :
 			for i, rigjoint in enumerate( jointchain.rigjoints ) :
 				# leave the last in the jointchain as it is guaranteed to not have any minorjoints
 				# before it to share its rotation with
-				if( i == 0 ) : continue
+				# if( i == 0 ) : continue
 
 				if( rigjoint not in jointchain.minorrigjoints.keys() ) :
 					continue
@@ -80,7 +80,7 @@ class DistributedTwistAddin( BaseAddin ) :
 		# amongst the minor joints above it
 		super( DistributedTwistAddin, self ).create()
 		
-		for relevantobject in self.relevant_objects_generator( self.jointchains ) :
+		for relevantobject in self._relevant_objects_generator( self.jointchains ) :
 			# create a multdiv to temper control's rotation by 1/len(minorjoints)
 			multdiv = pm.nodetypes.MultiplyDivide( n=utils.name_from_tags( 
 				relevantobject.rigjoint, 'rotateaddin', 'multiplydivide',
@@ -122,7 +122,7 @@ class SquashStretchChainAddin( BaseAddin ) :
 
 		lastrigjoint = None
 		# for each control
-		for relevantobject in self.relevant_objects_generator( self.jointchains ) :
+		for relevantobject in self._relevant_objects_generator( self.jointchains ) :
 			# get rest distance between last joint with a control / fist joint if there is none
 			if not lastrigjoint : lastrigjoint = ( 0, relevantobject.jointchain.rigjoints[0] )
 			length = relevantobject.jointchain.length_between( lastrigjoint[0], relevantobject.rigjointid )

@@ -47,7 +47,7 @@ class TreeNode( object ) :
 		else :
 			child = TreeNode( _value=_value )
 		
-		self.__check_tree_children()
+		self._check_tree_children()
 
 		# child = _value
 		child.__parent = self
@@ -63,7 +63,7 @@ class TreeNode( object ) :
 		return self.__parent
 
 	def tree_children( self, _partname=None ) :		
-		self.__check_tree_children()
+		self._check_tree_children()
 		if not _partname :
 			return self.__children
 		else :
@@ -96,7 +96,7 @@ class TreeNode( object ) :
 		ret.append( target )
 		return ret[::-1]
 
-	def __check_tree_children( self ) :
+	def _check_tree_children( self ) :
 		try :
 			self.__children
 			return True
