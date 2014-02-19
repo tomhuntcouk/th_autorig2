@@ -90,8 +90,8 @@ def main() :
 	# torun = 'ik'
 	torun = 'fk'
 	# torun = 'blend'
-	twist = True
-	stretch = False
+	twist = False
+	stretch = True
 	shouldtidy = False
 
 	if( torun == 'fk' ) :

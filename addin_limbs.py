@@ -110,8 +110,6 @@ class SquashStretchChainAddin( BaseAddin ) :
 		we will need to know if any more controls are coming up so we know which joint to use as the start
 		of the distnace between
 		"""
-
-		
 						
 		# if distnace between node > distance
 		# calculate scale factor
@@ -121,8 +119,10 @@ class SquashStretchChainAddin( BaseAddin ) :
 		super( SquashStretchChainAddin, self ).create()
 
 		lastrigjoint = None
+		relevantobjects = self._relevant_objects_generator( self.jointchains )
+		
 		# for each control
-		for relevantobject in self._relevant_objects_generator( self.jointchains ) :
+		for i, relevantobject in enumerate( relevantobjects ) :
 			# get rest distance between last joint with a control / fist joint if there is none
 			if not lastrigjoint : lastrigjoint = ( 0, relevantobject.jointchain.rigjoints[0] )
 			length = relevantobject.jointchain.length_between( lastrigjoint[0], relevantobject.rigjointid )
@@ -133,6 +133,17 @@ class SquashStretchChainAddin( BaseAddin ) :
 			lastrigjoint[1].rotatePivotTranslate >> distancebetween.point1
 			relevantobject.control.worldMatrix >> distancebetween.inMatrix2
 			relevantobject.control.rotatePivotTranslate >> distancebetween.point2
+
+			pma = pm.nodetypes.PlusMinusAverage()
+			pma.operation = 2
+			pma.input2D[0].input2Dx = length
+
+			pma.input1D[0].set( length )
+			distancebetween.distance >> pma.input1D[1]
+
+			
+
+
 
 			md = pm.nodetypes.MultiplyDivide()
 			distancebetween.distance >> md.input1X
