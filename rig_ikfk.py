@@ -11,8 +11,8 @@ import utils, settings
 class FkRig( BasicRig ) :
 	PARTNAME = 'fkRig'
 
-	def __init__( self ) :
-		super( FkRig, self ).__init__()
+	# def __init__( self ) :
+	# 	super( FkRig, self ).__init__()
 
 	def create( self, _jointchain=None ) :
 		super( FkRig, self ).create( _jointchain )
@@ -22,6 +22,7 @@ class FkRig( BasicRig ) :
 		if( not len( rigjoints ) ) :
 			utils.err( 'FkRig has no jointchains. Cannot create fk rig.' )
 			return False
+
 
 		for rigjoint in rigjoints :
 			control = controls.RigControl( n=rigjoint.name() )
@@ -47,8 +48,8 @@ class FkRig( BasicRig ) :
 class IkRig( BasicRig ) :
 	PARTNAME = 'ikRig'
 
-	def __init__( self ) :
-		super( IkRig, self ).__init__()
+	# def __init__( self ) :
+	# 	super( IkRig, self ).__init__()
 
 	def create( self, _jointchain=None ) :
 		super( IkRig, self ).create( _jointchain )

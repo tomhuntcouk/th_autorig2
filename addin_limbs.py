@@ -14,7 +14,7 @@ class RelevantObjects( object ) :
 		self.control = _control
 
 	def __str__( self ) :
-		return 'RelevantObjects: %s %s %s' % ( self.rigjointid, self.rigjoint, self.control )
+		return 'RelevantObjects: id: %s rigjoint: %s control: %s' % ( self.rigjointid, self.rigjoint, self.control )
 
 
 
@@ -72,8 +72,8 @@ class DistributedTwistAddin( BaseAddin ) :
 	PARTNAME = 'distributedTwistAddin'
 	AFFECTEDATTR = 'rotate'
 
-	def __init__( self, _primaryaxis=None ) :
-		super( DistributedTwistAddin, self ).__init__()		
+	# def __init__( self, _primaryaxis=None ) :
+	# 	super( DistributedTwistAddin, self ).__init__()		
 
 	def create( self ) :
 		# distribute the twist along the axis of each major joint
@@ -101,8 +101,8 @@ class SquashStretchChainAddin( BaseAddin ) :
 	PARTNAME = 'squashStretchChainAddin'
 	AFFECTEDATTR = 'scale'
 
-	def __init__( self, _primaryaxis=None ) :
-		super( SquashStretchChainAddin, self ).__init__()
+	# def __init__( self, _primaryaxis=None ) :
+	# 	super( SquashStretchChainAddin, self ).__init__()
 
 	def create( self ) :
 
@@ -136,14 +136,12 @@ class SquashStretchChainAddin( BaseAddin ) :
 
 			pma = pm.nodetypes.PlusMinusAverage()
 			pma.operation = 2
-			pma.input2D[0].input2Dx = length
+			# pma.input2D[0].input2Dx = length
 
 			pma.input1D[0].set( length )
 			distancebetween.distance >> pma.input1D[1]
 
-			
-
-
+			# print relevantobject
 
 			md = pm.nodetypes.MultiplyDivide()
 			distancebetween.distance >> md.input1X

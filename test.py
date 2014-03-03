@@ -4,6 +4,7 @@ import pprint
 from chain_basic import Jointchain
 from rig_basic import *
 from rig_ikfk import *
+from rig_spline import *
 from addin_limbs import *
 from skeleton import RigJoint
 from controls import RigControl
@@ -67,11 +68,8 @@ def main() :
 		c = RigControl( n=control )
 		c.zero_group().setParent( staticcontrolgroup )
 
-	l_arm = Jointchain.from_startend( 
-		# 'left_arm',
-		pm.PyNode( 'leftUpperArm_1_j' ), 
-		pm.PyNode( 'leftWrist_j' )
-	)
+
+	
 
 	# l_arm.orient_jointchain()
 	# l_arm.split_rigjoint( 0, 2 )	
@@ -79,20 +77,47 @@ def main() :
 	# l_arm_rig = BasicRig( l_arm )
 	# print l_arm.tree_parent()
 
-	l_arm_rig = BindRig( 
-		'leftArm'		
-	)
-	l_arm_rig.create( 
-		l_arm,
-		( 1, 2 )
-	)
+	
 
+
+
+	chain = 'spine'
 	# torun = 'ik'
-	torun = 'fk'
+	# torun = 'fk'
+	torun = 'spline'
 	# torun = 'blend'
 	twist = False
 	stretch = True
 	shouldtidy = False
+
+	if( chain == 'arm' ) :
+		l_arm = Jointchain.from_startend( 
+			pm.PyNode( 'leftUpperArm_1_j' ), 
+			pm.PyNode( 'leftWrist_j' )
+		)
+
+		l_arm_rig = BindRig( 
+			'leftArm'		
+		)
+		l_arm_rig.create( 
+			l_arm,
+			( 1, 2 )
+		)
+
+	elif( chain == 'spine' ) :
+		spine = Jointchain.from_startend(
+			pm.PyNode( 'spine_1_j' ), 
+			pm.PyNode( 'neck_1_j' )
+		)
+
+		spine_rig = BindRig(
+			'spine'
+		)
+		spine_rig.create(
+			spine,
+			( 1, 1 )
+		)
+
 
 	if( torun == 'fk' ) :
 
@@ -145,6 +170,9 @@ def main() :
 
 		if shouldtidy : l_arm_rig.tidy()
 
+	elif( torun == 'spline' ) :
 
-
+		splinerig = SplineRig()
+		spine_rig.add_child( splinerig )
+		splinerig.create()
 

@@ -24,6 +24,7 @@ tagdict = {
 	'fkRig'				: 'FKJ',
 	'ikRig'				: 'IKJ',
 	'blendRig'			: 'BJ',
+	'splineRig'			: 'SIKJ',
 	'control'			: 'CNTRL',	
 	'ikhandle'			: 'HND',
 	'ikeffector'		: 'EFF',
