@@ -66,9 +66,10 @@ class RigJoint( BaseJoint ) :
 		newrigjoints = super( RigJoint, self ).duplicate( *args, **kwargs )
 		for newrigjoint in newrigjoints :
 			newrigjoint.setParent( None )
+			newrigjoint.setRotation( self.getRotation() )
 			newrigjointchildren = newrigjoint.getChildren()
 			if( len( newrigjointchildren ) ) :
-				pm.delete( newrigjointchildren[0] )
+				pm.delete( newrigjointchildren )			
 		return newrigjoints
 
 	def orient( self, _orientchildless=True, _rotateOrder=None ) :		

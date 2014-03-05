@@ -49,7 +49,7 @@ def main() :
 	# vclass.testJoint()
 	# return
 
-	l = 'file -f -options "v=0;"  -esn 	false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig/assets/autorig_test.ma";addRecentFile("/Users/Tom/Development/th_autorig/assets/autorig_test.ma", "mayaAscii");'
+	l = 'file -f -options "v=0;"  -esn 	false  -ignoreVersion  -typ "mayaAscii" -o "/Users/Tom/Development/th_autorig2/assets/autorig_test.ma";addRecentFile("/Users/Tom/Development/th_autorig2/assets/autorig_test.ma", "mayaAscii");'
 	pm.mel.eval( l )
 	# print pm.api.MFnDependencyNode
 	# RigJoint( name='test' )	
@@ -88,7 +88,7 @@ def main() :
 	# torun = 'blend'
 	twist = False
 	stretch = True
-	shouldtidy = False
+	shouldtidy = True
 
 	if( chain == 'arm' ) :
 		l_arm = Jointchain.from_startend( 
@@ -175,4 +175,6 @@ def main() :
 		splinerig = SplineRig()
 		spine_rig.add_child( splinerig )
 		splinerig.create()
+
+		if shouldtidy : spine_rig.tidy()
 

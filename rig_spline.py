@@ -14,9 +14,10 @@ class SplineRig( BasicRig ) :
 
 	def create( self, _jointchain=None ) :
 		super( SplineRig, self ).create( _jointchain )
+		jointchain = self.tree_children( 'jointchain' )[0]
 
 		# get start and end joints
-		rigjoints = self.tree_children( 'jointchain' )[0].rigjoints
+		rigjoints = jointchain.rigjoints
 		startjoint = rigjoints[0]
 		endjoint = rigjoints[-1]
 		
@@ -37,17 +38,59 @@ class SplineRig( BasicRig ) :
 		endcontrol.position_to_object( endjoint )
 		self.add_child( endcontrol )
 
-		pm.select( None )
+		# create driver joints to bind curve to
+		startdriverjoint = startjoint.duplicate( 
+			n=utils.name_from_tags( startjoint, 'spline', 'driver' )
+		)[0]
+		self.add_child( startdriverjoint )
+
+		enddriverjoint = endjoint.duplicate(
+			n=utils.name_from_tags( endjoint, 'spline', 'driver' )
+		)[0]
+		self.add_child( enddriverjoint )
 
 		# create ik spline between them
 		ikhandlename = utils.name_from_tags( startjoint, 'ikhandle' )
-		pm.ikHandle( 
-			startjoint, 
-			endjoint,
-			solver='ikSplineSolver',
+		ikhandle, ikeffector, ikcurve = pm.ikHandle( 
+			startJoint=startjoint, 
 			endEffector=endjoint,
+			solver='ikSplineSolver',
+			numSpans=len( jointchain.rigjoints ) - 1,
 			name=ikhandlename
 		)
+		ikeffector.rename( utils.name_from_tags( endjoint, 'ikeffector' ) )
+		ikcurve.rename( utils.name_from_tags( startjoint, 'curve' ) )
+		self.add_child( ikhandle )
+		self.add_child( ikcurve )
 
-		# ikeffector.rename( utils.name_from_tags( endjoint, 'ikeffector' ) )
-		# self.add_child( ikhandle )
+		# bind curve to driver joints
+		tobind = [ ikcurve, startdriverjoint, enddriverjoint ]
+		pm.skinCluster( 
+			tobind,
+			bindMethod=0,
+			maximumInfluences=len( tobind ) - 1,
+		)
+
+		# set twist control
+		ikhandle.dTwistControlEnable.set( True )
+		ikhandle.dWorldUpType.set( 4 )
+		startdriverjoint.worldMatrix[0] >> ikhandle.dWorldUpMatrix
+		enddriverjoint.worldMatrix[0] >> ikhandle.dWorldUpMatrixEnd
+
+		# parent driver joints to controls
+		pm.parentConstraint(
+			[ startcontrol, startdriverjoint ],
+			mo=False
+		)
+		pm.parentConstraint(
+			[ endcontrol, enddriverjoint ],
+			mo=False
+		)
+
+
+
+
+
+
+
+

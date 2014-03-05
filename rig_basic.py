@@ -27,6 +27,7 @@ class BaseRig( TreeNode ) :
 
 
 	def tidy( self ) :
+
 		allrigs = self.tree_children( '.*Rig' )
 		allother = list( set( self.tree_children() ) - set( allrigs ) )
 		
@@ -52,12 +53,12 @@ class BaseRig( TreeNode ) :
 			group = groups[-1]
 
 			try :
-				if( obj.getParent() != group ) :
+				if( obj.getParent() != group ) :					
 					obj.setParent( group )
 			except RuntimeError, e :
 				utils.err( e.message )
 			except AttributeError, e :
-				# utils.err( e.message )
+				utils.err( e.message )
 				pass
 
 
