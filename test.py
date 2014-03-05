@@ -79,7 +79,7 @@ def main() :
 
 	
 
-
+	chain, torun, twist, stretch, shouldtidy = [None] * 5
 
 	chain = 'spine'
 	# torun = 'ik'

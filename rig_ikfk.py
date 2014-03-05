@@ -6,8 +6,6 @@ import controls
 import utils, settings
 
 
-
-
 class FkRig( BasicRig ) :
 	PARTNAME = 'fkRig'
 

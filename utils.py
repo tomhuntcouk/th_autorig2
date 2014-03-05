@@ -57,8 +57,13 @@ def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :
 def renumber_from_name( _name, _number ) :
 	d = settings.name_string_delimeter
 	namesplit = _name.rsplit( d, 1 )
-	name = '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
-	return name
+	try :
+		name = '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
+		return name
+	except :
+		err( str(namesplit) )
+		return False
+	
 
 def get_tag( _tag ) :
 	return settings.tagdict[ _tag ]
