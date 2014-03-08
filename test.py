@@ -108,6 +108,8 @@ def main() :
 		spine = Jointchain.from_startend(
 			pm.PyNode( 'spine_1_j' ), 
 			pm.PyNode( 'neck_1_j' )
+			# pm.PyNode( 'leftUpperArm_1_j' ), 
+			# pm.PyNode( 'leftWrist_j' )
 		)
 
 		spine_rig = BindRig(
@@ -115,7 +117,7 @@ def main() :
 		)
 		spine_rig.create(
 			spine,
-			( 1, 1 )
+			# ( 1, 1 )
 		)
 
 
@@ -172,9 +174,9 @@ def main() :
 
 	elif( torun == 'spline' ) :
 
-		splinerig = SplineRig()
-		spine_rig.add_child( splinerig )
+		splinerig = SplineRig()		
+		spine_rig.add_child( splinerig )		
 		splinerig.create()
-
+				
 		if shouldtidy : spine_rig.tidy()
 

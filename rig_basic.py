@@ -28,6 +28,10 @@ class BaseRig( TreeNode ) :
 
 	def tidy( self ) :
 
+		# we will need to fully parent the bind joints together
+		# at some point
+		# perhaps this should be handled by BindRig?
+
 		allrigs = self.tree_children( '.*Rig' )
 		allother = list( set( self.tree_children() ) - set( allrigs ) )
 		
@@ -71,7 +75,7 @@ class BindRig( BaseRig ) :
 		self.name = _name		
 		self.masterjointchain = None
 	
-	def create( self, _jointchain, _divisionstuple ) :		
+	def create( self, _jointchain, _divisionstuple=( 0, 0 ) ) :		
 		# keeping these two references to _jointchain feels weird
 		self.masterjointchain = _jointchain 
 		self.masterjointchain.PARTNAME = 'masterjointchain'

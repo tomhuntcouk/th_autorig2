@@ -12,31 +12,30 @@ import utils, settings
 class SplineRig( BasicRig ) :
 	PARTNAME = 'splineRig'
 
-	def create( self, _jointchain=None ) :
+	def create( self, _jointchain=None ) :		
 		super( SplineRig, self ).create( _jointchain )
+		
 		jointchain = self.tree_children( 'jointchain' )[0]
 
 		# get start and end joints
-		rigjoints = jointchain.rigjoints
-		startjoint = rigjoints[0]
-		endjoint = rigjoints[-1]
+		rigjoints = jointchain.rigjoints		
 		
-		# create controls at start and end
-		startcontrol = RigControl( n=startjoint.name() )
-		startcontrol.setRotationOrder( 
-			utils.aim_axis_to_rotate_order( settings.rotationorder ),
-			False
-		)
-		startcontrol.position_to_object( startjoint )
-		self.add_child( startcontrol )
+		# # create controls and store start/end controls/rigjoints
+		controlslist = []
+		for rigjoint in rigjoints :
+			control = RigControl( n=rigjoint.name() )
+			control.setRotationOrder(
+				utils.aim_axis_to_rotate_order( settings.rotationorder ),
+				False
+			)
+			control.position_to_object( rigjoint )
+			self.add_child( control )
+			controlslist.append( control )
 
-		endcontrol = RigControl( n=endjoint.name() )
-		endcontrol.setRotationOrder( 
-			utils.aim_axis_to_rotate_order( settings.rotationorder ),
-			False
-		)
-		endcontrol.position_to_object( endjoint )
-		self.add_child( endcontrol )
+		startjoint = jointchain.rigjoints[0]
+		startcontrol = controlslist[0]
+		endjoint = jointchain.rigjoints[-1]
+		endcontrol = controlslist[-1]
 
 		# create driver joints to bind curve to
 		startdriverjoint = startjoint.duplicate( 
@@ -86,6 +85,7 @@ class SplineRig( BasicRig ) :
 			[ endcontrol, enddriverjoint ],
 			mo=False
 		)
+
 
 
 

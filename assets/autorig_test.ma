@@ -1,6 +1,6 @@
 //Maya ASCII 2013 scene
 //Name: autorig_test.ma
-//Last modified: Wed, Mar 05, 2014 08:31:44 PM
+//Last modified: Sat, Mar 08, 2014 11:01:51 AM
 //Codeset: UTF-8
 requires maya "2013";
 currentUnit -l centimeter -a degree -t film;
@@ -12,18 +12,18 @@ fileInfo "osv" "Mac OS X 10.9";
 createNode transform -s -n "persp";
 	addAttr -ci true -sn "th_autorig" -ln "th_autorig" -dv 1 -min 0 -max 1 -at "bool";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 1.1697749978288869 15.022894532063967 2.0726616265328026 ;
-	setAttr ".r" -type "double3" -22.538352729626741 19.400000000000091 0 ;
+	setAttr ".t" -type "double3" 7.2749819907687687 14.328715672785538 16.799075357161318 ;
+	setAttr ".r" -type "double3" -22.538352729626737 19.400000000000091 8.4300208828322263e-16 ;
 	setAttr ".rp" -type "double3" 1.1102230246251563e-16 1.7763568394002505e-15 0 ;
 	setAttr ".rpt" -type "double3" -8.9831449625292187e-17 -1.7889477885158266e-17 -2.7406761715005008e-16 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999979;
-	setAttr ".coi" 2.667819186096299;
+	setAttr ".coi" 18.457883353041836;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
-	setAttr ".tp" -type "double3" 0.35131017251645524 14.000314704341678 -0.25149521743562242 ;
+	setAttr ".tp" -type "double3" 1.6122562884732479 7.2537762324968309 0.7188941575818848 ;
 	setAttr ".hc" -type "string" "viewSet -p %camera";
 createNode transform -s -n "top";
 	setAttr ".v" no;
@@ -274,7 +274,7 @@ createNode joint -n "world";
 	setAttr ".mxrl" -type "double3" 360 360 360 ;
 	setAttr ".radi" 0.5;
 createNode joint -n "leftClavicle_j";
-	setAttr ".t" -type "double3" 0.70262034503291071 13.233276943689694 -0.47577376535715643 ;
+	setAttr ".t" -type "double3" 0.70262034503291071 13.233276943689694 -0.47577376535715638 ;
 	setAttr ".mnrl" -type "double3" -360 -360 -360 ;
 	setAttr ".mxrl" -type "double3" 360 360 360 ;
 	setAttr ".jot" -type "string" "none";
