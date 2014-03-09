@@ -194,3 +194,11 @@ def lerp( p1, p2, t ) :
 		err( 'inputs for lerp ( %s %s ) not of same type' % ( p1, p2 ) )
 		return False
 
+def distance_between( o1, o2 ) :
+	try :
+		o1pos = o1.getTranslation( space='world' )
+		o2pos = o2.getTranslation( space='world' )
+	except :
+		err( 'Could not get translations of either %s or %s. Are they transforms?' % ( o1, o2 ) )
+	return abs( o1pos.distanceTo( o2pos ) )
+

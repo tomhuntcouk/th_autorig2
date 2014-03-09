@@ -18,35 +18,37 @@ class SplineRig( BasicRig ) :
 		jointchain = self.tree_children( 'jointchain' )[0]
 
 		# get start and end joints
-		rigjoints = jointchain.rigjoints		
+		# rigjoints = jointchain.rigjoints		
 		
 		# # create controls and store start/end controls/rigjoints
 		controlslist = []
-		for rigjoint in rigjoints :
+		driverslist = []
+		for i, rigjoint in enumerate( jointchain.rigjoints ) :
+			prevrigjoint = None
+			try : prevrigjoint = jointchain.rigjoints[ i - 1 ]
+			except : pass
+
 			control = RigControl( n=rigjoint.name() )
 			control.setRotationOrder(
 				utils.aim_axis_to_rotate_order( settings.rotationorder ),
 				False
 			)
-			control.position_to_object( rigjoint )
+			control.position_to_object( rigjoint, prevrigjoint )
 			self.add_child( control )
 			controlslist.append( control )
 
+			driverrigjoint = rigjoint.duplicate(
+				n=utils.name_from_tags( rigjoint, 'spline', 'driver' )
+			)[0]
+			self.add_child( driverrigjoint )
+			driverslist.append( driverrigjoint )
+
 		startjoint = jointchain.rigjoints[0]
+		startdriver = driverslist[0]
 		startcontrol = controlslist[0]
 		endjoint = jointchain.rigjoints[-1]
+		enddriver = driverslist[-1]
 		endcontrol = controlslist[-1]
-
-		# create driver joints to bind curve to
-		startdriverjoint = startjoint.duplicate( 
-			n=utils.name_from_tags( startjoint, 'spline', 'driver' )
-		)[0]
-		self.add_child( startdriverjoint )
-
-		enddriverjoint = endjoint.duplicate(
-			n=utils.name_from_tags( endjoint, 'spline', 'driver' )
-		)[0]
-		self.add_child( enddriverjoint )
 
 		# create ik spline between them
 		ikhandlename = utils.name_from_tags( startjoint, 'ikhandle' )
@@ -63,7 +65,7 @@ class SplineRig( BasicRig ) :
 		self.add_child( ikcurve )
 
 		# bind curve to driver joints
-		tobind = [ ikcurve, startdriverjoint, enddriverjoint ]
+		tobind = [ ikcurve ] + driverslist
 		pm.skinCluster( 
 			tobind,
 			bindMethod=0,
@@ -73,23 +75,36 @@ class SplineRig( BasicRig ) :
 		# set twist control
 		ikhandle.dTwistControlEnable.set( True )
 		ikhandle.dWorldUpType.set( 4 )
-		startdriverjoint.worldMatrix[0] >> ikhandle.dWorldUpMatrix
-		enddriverjoint.worldMatrix[0] >> ikhandle.dWorldUpMatrixEnd
+		startdriver.worldMatrix[0] >> ikhandle.dWorldUpMatrix
+		enddriver.worldMatrix[0] >> ikhandle.dWorldUpMatrixEnd
 
-		# parent driver joints to controls
-		pm.parentConstraint(
-			[ startcontrol, startdriverjoint ],
-			mo=False
-		)
-		pm.parentConstraint(
-			[ endcontrol, enddriverjoint ],
-			mo=False
-		)
+		# parent drivers to controls
+		for control, driver in zip( controlslist, driverslist ) :
+			pm.parentConstraint(
+				[ control, driver ],
+				mo=False
+			)
 
+		# point constraint intermediate controls
+		# maintaining distance between start and end controls
+		# for control in controlslist[1:-1] :
+		# 	# tostartcontrol = utils.distance_between( startcontrol, control )
+		# 	# toendcontrol = utils.distance_between( endcontrol, control )
+		# 	# print tostartcontrol / toendcontrol
+		# 	pm.pointConstraint(
+		# 		[ startcontrol, endcontrol, control.zero_group() ],
+		# 		mo=True
+		# 	)
 
-
-
-
+		# # set up orient constraints for fk
+		for i, control in enumerate( controlslist ) :
+			if( i > len( controlslist ) - 2 ) : break
+			nextcontrolzero = controlslist[ i + 1 ].zero_group()			
+			if( nextcontrolzero ) :
+				pm.orientConstraint(
+					[ control, nextcontrolzero ],
+					mo=True
+				)
 
 
 

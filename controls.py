@@ -111,11 +111,23 @@ class RigControl( BaseControl ) :
 			utils.err( 'Cannot find %s group for %s' % ( n, self ) )
 			return False
 
-	def position_to_object( self, _obj ) :
+	def position_to_object( self, _obj, _offsetobject=None ) :
+		target = _obj
+		if( _offsetobject ) : target = _offsetobject
+
 		zerogroup = self.zero_group()
-		zerogroup.setTranslation( _obj.getTranslation( space='world' ), space='world' )
-		zerogroup.setRotation( _obj.getRotation( space='world' ), space='world' )
+		zerogroup.setTranslation( target.getTranslation( space='world' ), space='world' )
+		zerogroup.setRotation( target.getRotation( space='world' ), space='world' )
+		
+		if( target != _obj ) :
+			sdkgroup = self.sdk_group()
+			sdkgroup.setTranslation( _obj.getTranslation( space='world' ), space='world' )
+			sdkgroup.setRotation( _obj.getRotation( space='world' ), space='world' )
+
 		# record which object we positioned it to
 		utils.add_set_attr( self, relatedjointattr, _obj )
+
+
+
 
 pm.factories.registerVirtualClass( RigControl, nameRequired=False )
