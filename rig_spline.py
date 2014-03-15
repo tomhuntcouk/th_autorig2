@@ -22,39 +22,29 @@ class SplineIkRig( BasicRig ) :
 		rigjoints = jointchain.rigjoints		
 		
 		# # create controls and store start/end controls/rigjoints
-		controlslist = []
 		controlsdriverslist = []
-		for i, rigjoint in enumerate( [ rigjoints[0], rigjoints[-1] ] ) :
-		# for i, rigjoint in enumerate( jointchain.rigjoints ) :			
-			prevrigjoint = None
-			try : prevrigjoint = jointchain.rigjoints[ i - 1 ]
-			except : pass			
+		for i, rigjoint in enumerate( [ rigjoints[0], rigjoints[-1] ] ) :		
 
-			# firstorlast = i == 0 or i == len( jointchain.rigjoints ) - 1
-			firstorlast = True
-
+			# create control
 			control = RigControl( n=rigjoint.name() )
 			control.setRotationOrder(
 				utils.aim_axis_to_rotate_order( settings.rotationorder ),
 				False
 			)
-			control.position_to_object( rigjoint, prevrigjoint )
+			control.position_to_object( rigjoint )
 			self.add_child( control )
-			controlslist.append( control )
 
-			if( firstorlast ) :
-				driverrigjoint = rigjoint.duplicate(
-					n=utils.name_from_tags( rigjoint, 'spline', 'driver' )
-				)[0]
-				self.add_child( driverrigjoint )
-				controlsdriverslist.append( ( control, driverrigjoint ) )
+			# create driver joint and store it with it's corresponding control
+			driverrigjoint = rigjoint.duplicate(
+				n=utils.name_from_tags( rigjoint, 'spline', 'driver' )
+			)[0]
+			self.add_child( driverrigjoint )
+			controlsdriverslist.append( ( control, driverrigjoint ) )
 
 		startjoint = jointchain.rigjoints[0]
 		startdriver = controlsdriverslist[0][1]
-		startcontrol = controlslist[0]
 		endjoint = jointchain.rigjoints[-1]
 		enddriver = controlsdriverslist[-1][1]
-		endcontrol = controlslist[-1]
 
 		# create ik spline between them
 		ikhandlename = utils.name_from_tags( startjoint, 'ikhandle' )
@@ -71,7 +61,6 @@ class SplineIkRig( BasicRig ) :
 		self.add_child( ikcurve )
 
 		# bind curve to driver joints
-		# tobind = [ ikcurve ] + driverslist
 		tobind = [ ikcurve ] + [ i[1] for i in controlsdriverslist ]
 		pm.skinCluster( 
 			tobind,
@@ -86,7 +75,6 @@ class SplineIkRig( BasicRig ) :
 		enddriver.worldMatrix[0] >> ikhandle.dWorldUpMatrixEnd
 
 		# parent drivers to controls
-		# for control, driver in zip( controlslist, driverslist ) :
 		for control, driver in controlsdriverslist :
 			pm.parentConstraint(
 				[ control, driver ],
