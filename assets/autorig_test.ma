@@ -1,6 +1,6 @@
 //Maya ASCII 2013 scene
 //Name: autorig_test.ma
-//Last modified: Sat, Mar 08, 2014 11:01:51 AM
+//Last modified: Sat, Mar 15, 2014 08:34:26 PM
 //Codeset: UTF-8
 requires maya "2013";
 currentUnit -l centimeter -a degree -t film;
@@ -8,18 +8,18 @@ fileInfo "application" "maya";
 fileInfo "product" "Maya 2013";
 fileInfo "version" "2013 x64";
 fileInfo "cutIdentifier" "201202220220-825135";
-fileInfo "osv" "Mac OS X 10.9";
+fileInfo "osv" "Mac OS X 10.9.2";
 createNode transform -s -n "persp";
 	addAttr -ci true -sn "th_autorig" -ln "th_autorig" -dv 1 -min 0 -max 1 -at "bool";
 	setAttr ".v" no;
-	setAttr ".t" -type "double3" 7.2749819907687687 14.328715672785538 16.799075357161318 ;
-	setAttr ".r" -type "double3" -22.538352729626737 19.400000000000091 8.4300208828322263e-16 ;
+	setAttr ".t" -type "double3" 10.443470120743951 10.7957232119306 16.391773826902888 ;
+	setAttr ".r" -type "double3" -11.138352729675432 29.400000000005697 4.563395691257179e-16 ;
 	setAttr ".rp" -type "double3" 1.1102230246251563e-16 1.7763568394002505e-15 0 ;
 	setAttr ".rpt" -type "double3" -8.9831449625292187e-17 -1.7889477885158266e-17 -2.7406761715005008e-16 ;
 createNode camera -s -n "perspShape" -p "persp";
 	setAttr -k off ".v" no;
 	setAttr ".fl" 34.999999999999979;
-	setAttr ".coi" 18.457883353041836;
+	setAttr ".coi" 18.33507249195991;
 	setAttr ".imn" -type "string" "persp";
 	setAttr ".den" -type "string" "persp_depth";
 	setAttr ".man" -type "string" "persp_mask";
@@ -46,7 +46,7 @@ createNode camera -s -n "frontShape" -p "front";
 	setAttr -k off ".v" no;
 	setAttr ".rnd" no;
 	setAttr ".coi" 100.1;
-	setAttr ".ow" 1.6680984733808697;
+	setAttr ".ow" 7.972292986337763;
 	setAttr ".imn" -type "string" "front";
 	setAttr ".den" -type "string" "front_depth";
 	setAttr ".man" -type "string" "front_mask";
@@ -79,10 +79,10 @@ createNode joint -n "spine_1_j" -p "pelvis_j";
 	setAttr ".jot" -type "string" "none";
 	setAttr ".radi" 0.2;
 createNode joint -n "spine_2_j" -p "spine_1_j";
-	setAttr ".t" -type "double3" -1.19269e-16 2.1418031967215807 -0.045457366377647385 ;
+	setAttr ".t" -type "double3" -1.1926899999999995e-16 2.2802781964652041 -0.045457366377647385 ;
 	setAttr ".radi" 0.2;
 createNode joint -n "neck_1_j" -p "spine_2_j";
-	setAttr ".t" -type "double3" -1.2300143066334497e-16 2.2088652439466494 -0.45502348734792486 ;
+	setAttr ".t" -type "double3" -1.2300143066334502e-16 2.0703902442030255 -0.45502348734792486 ;
 	setAttr ".mnrl" -type "double3" -360 -360 -360 ;
 	setAttr ".mxrl" -type "double3" 360 360 360 ;
 	setAttr ".jot" -type "string" "none";

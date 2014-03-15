@@ -88,6 +88,7 @@ def main() :
 	# torun = 'blend'
 	twist = False
 	stretch = True
+	# shouldtidy = False
 	shouldtidy = True
 
 	if( chain == 'arm' ) :
@@ -174,9 +175,9 @@ def main() :
 
 	elif( torun == 'spline' ) :
 
-		splinerig = SplineRig()		
-		spine_rig.add_child( splinerig )		
-		splinerig.create()
-				
+		splineikfkrig = SplineIkFkRig()
+		spine_rig.add_child( splineikfkrig )
+		splineikfkrig.create()
+
 		if shouldtidy : spine_rig.tidy()
 

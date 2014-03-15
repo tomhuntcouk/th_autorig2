@@ -125,7 +125,6 @@ class IkRig( BasicRig ) :
 		return True
 
 
-
 class IkFkBlendRig( BlendRig ) :
 	PARTNAME = 'ikfkBlendRig'
 
