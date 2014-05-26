@@ -147,22 +147,40 @@ class IkRig( BasicRig ) :
 			return False
 
 		for j in jointchainzipped :
-			pm.parentConstraint( [ j[1], j[0] ], mo=False )
-
+			pass
+			# pm.parentConstraint( [ j[1], j[0] ], mo=False )
+			pm.pointConstraint( [ j[1], j[0] ], mo=False )
+			pm.orientConstraint( [ j[1], j[0] ], mo=False )
+			# pm.scaleConstraint( [ j[1], j[0] ], mo=False )
 		return True
 
 
 	def addinSquashStretch( self ) :
-		jointchain = self.tree_children( 'jointchain' )[0]
+	
+		# make sure we're getting the simple simplejointchain
+			
+		jointchain = None
+		simplejointchain = None
+		for j in self.tree_children( 'jointchain' ) :
+			if( not jointchain and not j.is_simple() ) : jointchain = j
+			if( not simplejointchain and j.is_simple() ) : simplejointchain = j
+			if( jointchain and simplejointchain ) : break
+
+		if( not ( simplejointchain and jointchain ) ) :
+			utils.err( 'Cannot find the required jointchains in %s' % ( self.PARTNAME ) )
+			return False
+
 		control = self.tree_children( 'rigControl' )[0]
 
-		length = jointchain.length_between( 0, len( jointchain.rigjoints ) )
+		length = simplejointchain.length_between( 0, len( simplejointchain.rigjoints ) )
 		distancebetween = pm.nodetypes.DistanceBetween()
 
-		jointchain.rigjoints[0].worldMatrix >> distancebetween.inMatrix1
-		jointchain.rigjoints[0].rotatePivotTranslate >> distancebetween.point1
+		simplejointchain.rigjoints[0].worldMatrix >> distancebetween.inMatrix1
+		simplejointchain.rigjoints[0].rotatePivotTranslate >> distancebetween.point1
 		control.worldMatrix >> distancebetween.inMatrix2
 		control.rotatePivotTranslate >> distancebetween.point2
+
+		# multiply divide to get scale factor
 
 		multdiv = pm.nodetypes.MultiplyDivide()
 		multdiv.rename( utils.name_from_tags( control, 'squashstretch', 'multiplydivide' ) )	
@@ -171,12 +189,38 @@ class IkRig( BasicRig ) :
 		multdiv.input2X.set( length )
 		distancebetween.distance >> multdiv.input1X
 
-		alljoints = self.tree_children( 'jointchain' )[0].all_joints()
-		for joint in alljoints :
-			primaryaxis = joint.getRotationOrder()[0].upper()
-			multdiv.outputX >> joint.attr( 'scale' + primaryaxis )
+		# condition to decide whether to scale
 
+		condition = pm.nodetypes.Condition()
+		condition.operation.set( 2 )
+		condition.secondTerm.set( length )
+		distancebetween.distance >> condition.firstTerm
+		multdiv.outputX >> condition.colorIfTrueR
 
+		# parent minorjoints but also inverse scale for non primary axes on all joints
+
+		# multdiv = pm.nodetypes.MultiplyDivide()
+		# multdiv.rename( utils.name_from_tags( jointchain.PARTNAME, 'squashstretch', 'multiplydivide' ) )
+		# multdiv.operation.set( 2 )
+		# multdiv.input1X.set( 1 )
+		# condition.colorIfTrueR >> multdiv.input2X
+
+		jointszipped = zip( simplejointchain.rigjoints, jointchain.rigjoints )
+		for i in range( len( jointszipped ) - 1 ) :
+			joints = jointszipped[i]
+			nextjoints = jointszipped[i + 1]
+			primaryaxis = joints[0].getRotationOrder()[0].upper()
+			condition.outColorR >> joints[0].attr( 'scale' + primaryaxis )
+			# condition.outColorR >> joints[1].attr( 'scale' + primaryaxis )
+
+			minorjoints = jointchain.minorrigjoints[ joints[1] ]
+			totalminorjoints = len( minorjoints )
+			for j, minorjoint in enumerate( minorjoints ) :
+				ratio = ( j + 1.0 ) / ( totalminorjoints + 1.0 )
+				pm.pointConstraint( [ joints[0], minorjoint ], mo=False, w=1-ratio )
+				pm.pointConstraint( [ nextjoints[0], minorjoint ], mo=False, w=ratio )
+
+		return True
 
 
 class IkFkBlendRig( BlendRig ) :

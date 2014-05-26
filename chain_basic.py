@@ -95,18 +95,15 @@ class Jointchain( TreeNode ) :
 
 	def length_between( self, _startindex, _endindex ) :
 		ret = 0.00		
-		for i in range( _startindex, _endindex ) :
-			# axis = settings.rotationorder[0]
+		for i in range( _startindex + 1, _endindex ) :
 			rigjoint = self.rigjoints[ i ]
 			axis = rigjoint.getRotationOrder()[0]
-			attr = 'translate' + axis.upper()
+			attr = 'translate' + axis.upper()		
 			ret += rigjoint.attr( attr ).get()
-			for minorrigjoint in self.minorrigjoints[ rigjoint ] :
-				ret += minorrigjoint.attr( attr ).get()
+			if( rigjoint in self.minorrigjoints.keys() ) :
+				for minorrigjoint in self.minorrigjoints[ rigjoint ] :
+					ret += minorrigjoint.attr( attr ).get()
 		return ret
-
-	def major_joints( self ) :
-		return self.rigjoints
 
 	def all_joints( self ) :
 		ret = []
@@ -118,6 +115,19 @@ class Jointchain( TreeNode ) :
 			except :
 				pass
 		return ret
+
+	def minor_joints( self ) :
+		ret = []
+		for k, v in self.minorrigjoints.items() :
+			ret += v
+		return ret
+
+
+	def is_simple( self ) :
+		numrigjoints = len( self.rigjoints )
+		numalljoints = len( self.all_joints() )
+		return bool( not numalljoints - numrigjoints )
+		
 
 
 	############################################################

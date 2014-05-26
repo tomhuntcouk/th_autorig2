@@ -155,7 +155,7 @@ def main() :
 		
 		ikw = pm.PyNode('leftWrist_IKJ')
 		palm = pm.PyNode('leftPalm_j')
-		palm.setParent(ikw)
+		# palm.setParent(ikw)
 
 		if shouldtidy : ik_rig.tidy()
 
