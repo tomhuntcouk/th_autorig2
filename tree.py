@@ -37,12 +37,6 @@ class TreeNode( object ) :
 		self.__parent = _parent
 		self.__children = []
 
-	def __unicode__( self ) :
-		return self.tree_root().name + ' - ' + self.PARTNAME
-
-	def __str__( self ) :
-		return unicode( self ).encode( 'utf-8' )
-
 	def add_child( self, _value ) :		
 		# # if _value is a TreeNode, use it
 		# # otherwise we'll create a new TreeNode with _value as __value
@@ -53,7 +47,7 @@ class TreeNode( object ) :
 		else :
 			child = TreeNode( _value=_value )
 		
-		self.__check_tree_children()
+		self._check_tree_children()
 
 		# child = _value
 		child.__parent = self
@@ -69,7 +63,7 @@ class TreeNode( object ) :
 		return self.__parent
 
 	def tree_children( self, _partname=None ) :		
-		self.__check_tree_children()
+		self._check_tree_children()
 		if not _partname :
 			return self.__children
 		else :
@@ -102,7 +96,7 @@ class TreeNode( object ) :
 		ret.append( target )
 		return ret[::-1]
 
-	def __check_tree_children( self ) :
+	def _check_tree_children( self ) :
 		try :
 			self.__children
 			return True

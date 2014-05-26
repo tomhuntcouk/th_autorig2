@@ -57,8 +57,13 @@ def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :
 def renumber_from_name( _name, _number ) :
 	d = settings.name_string_delimeter
 	namesplit = _name.rsplit( d, 1 )
-	name = '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
-	return name
+	try :
+		name = '%s%s%s%s%s' % ( namesplit[0], d, _number, d, namesplit[1] )
+		return name
+	except :
+		err( str(namesplit) )
+		return False
+	
 
 def get_tag( _tag ) :
 	return settings.tagdict[ _tag ]
@@ -153,6 +158,18 @@ def is_subclass( _obj, _class ) :
 #########################################################
 
 
+def aim_axis_to_vectors( _xyz ) :
+	rotationorderdict = {
+		'XYZ' : ( ( 1, 0, 0 ), ( 0, 1, 0 ) ),
+		'YZX' : ( ( 0, 1, 0 ), ( 0, 0, 1 ) ),
+		'ZXY' : ( ( 0, 0, 1 ), ( 1, 0, 0 ) ),
+	}
+	return rotationorderdict[ _xyz.upper() ]
+
+def aim_axis_to_rotate_order( _xyz ) :
+	i1, i2, i3 = _xyz
+	return ''.join( ( i3, i1, i2 ) )
+
 def lerp( p1, p2, t ) :
 	if( type( p1 ) == type( p2 ) ) :
 		if( type( p1 ) == pm.datatypes.Vector ) :
@@ -176,4 +193,12 @@ def lerp( p1, p2, t ) :
 	else :
 		err( 'inputs for lerp ( %s %s ) not of same type' % ( p1, p2 ) )
 		return False
+
+def distance_between( o1, o2 ) :
+	try :
+		o1pos = o1.getTranslation( space='world' )
+		o2pos = o2.getTranslation( space='world' )
+	except :
+		err( 'Could not get translations of either %s or %s. Are they transforms?' % ( o1, o2 ) )
+	return abs( o1pos.distanceTo( o2pos ) )
 

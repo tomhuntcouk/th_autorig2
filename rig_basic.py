@@ -19,7 +19,19 @@ tidydict = {
 
 
 class BaseRig( TreeNode ) :
+	PARTNAME = 'bindRig'
+
+	# def __init__( self ) :
+	# 	super( BaseRig, self ).__init__()
+	# 	self.mainjointchain = None
+
+
 	def tidy( self ) :
+
+		# we will need to fully parent the bind joints together
+		# at some point
+		# perhaps this should be handled by BindRig?
+
 		allrigs = self.tree_children( '.*Rig' )
 		allother = list( set( self.tree_children() ) - set( allrigs ) )
 		
@@ -28,10 +40,12 @@ class BaseRig( TreeNode ) :
 
 		for child in allother :
 			# create the group hierarchy to the required level and parent to it
-			# we'll use __tidydict to specify which object to parent
+			# we'll use tidydict to specify which object to parent
 
 			try : partname = child.tree_value().PARTNAME
 			except : partname = 'treeNode'
+			if( not partname in tidydict.keys() )  :
+				partname = 'treeNode'
 
 			topgroup = tidydict[ partname ][0]
 			obj = eval( 'child' + tidydict[ partname ][1] )
@@ -43,10 +57,13 @@ class BaseRig( TreeNode ) :
 			group = groups[-1]
 
 			try :
-				if( obj.getParent() != group ) :
+				if( obj.getParent() != group ) :					
 					obj.setParent( group )
 			except RuntimeError, e :
 				utils.err( e.message )
+			except AttributeError, e :
+				utils.err( e.message )
+				pass
 
 
 
@@ -58,7 +75,7 @@ class BindRig( BaseRig ) :
 		self.name = _name		
 		self.masterjointchain = None
 	
-	def create( self, _jointchain, _divisionstuple ) :		
+	def create( self, _jointchain, _divisionstuple=( 0, 0 ) ) :		
 		# keeping these two references to _jointchain feels weird
 		self.masterjointchain = _jointchain 
 		self.masterjointchain.PARTNAME = 'masterjointchain'

@@ -6,6 +6,8 @@ should_error = False
 name_string_delimeter = '_'
 attrname = 'th_autorig_nodecheck'
 
+rotationorder = 'XYZ'
+
 staticgroupsdict = {
 	'geometry'		: 'GEOMETRY_GRP',
 	'skeleton'		: 'SKELETON_GRP',
@@ -21,7 +23,9 @@ tagdict = {
 	None				: '',
 	'fkRig'				: 'FKJ',
 	'ikRig'				: 'IKJ',
+	'spline'			: 'S',
 	'blendRig'			: 'BJ',
+	'splineRig'			: 'SIKJ',
 	'control'			: 'CNTRL',	
 	'ikhandle'			: 'HND',
 	'ikeffector'		: 'EFF',
@@ -36,5 +40,9 @@ tagdict = {
 	'polevector' 		: 'PV',
 	'ikfkswitcher' 		: 'IKFK',
 	'group'				: 'GRP',
-	'blend'				: 'BLEND'
+	'curve'				: 'CRV',
+	'blend'				: 'BLEND',
+	'rotateaddin'		: 'RADDIN',
+	'transformaddin'	: 'TADDIN',
+	'scaleaddin'		: 'SADDIN',
 }

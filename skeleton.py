@@ -19,7 +19,7 @@ clone the PyMel Github repo to resolve the problem
 # print pm.factories.VirtualClassManager.register
 
 
-class BaseJoint( pm.Joint ) :
+class BaseJoint( pm.Joint, object ) :
 	PARTNAME = 'BaseJoint'
 
 	@classmethod
@@ -66,23 +66,32 @@ class RigJoint( BaseJoint ) :
 		newrigjoints = super( RigJoint, self ).duplicate( *args, **kwargs )
 		for newrigjoint in newrigjoints :
 			newrigjoint.setParent( None )
+			newrigjoint.setRotation( self.getRotation() )
 			newrigjointchildren = newrigjoint.getChildren()
 			if( len( newrigjointchildren ) ) :
-				pm.delete( newrigjointchildren[0] )
+				pm.delete( newrigjointchildren )			
 		return newrigjoints
 
-	def orient( self, _orientchildless=True ) :		
-		# check we have a child to aim to
-		aim = ( 1, 0, 0 )
+	def orient( self, _orientchildless=True, _rotateOrder=None ) :		
+		
+		# get the rotation order we're after		
+		if( not _rotateOrder ) :
+			_rotateOrder = settings.rotationorder
+
+		# check we have a child to aim to and decide of aim vectors
+		aimvector = utils.aim_axis_to_vectors( _rotateOrder )[0]
+		upvector = utils.aim_axis_to_vectors( _rotateOrder )[1]
+
+		aim = aimvector
 		children = self.getChildren()
-		parent = self.getParent()
+		parent = self.getParent()		
 		if( not parent ) : parent = self
 		if( len( children ) < 1 ) :
 			if( not _orientchildless ) :
 				utils.wrn( '%s has no children. Skipping orient...' % ( self.name() ) )
 				return False
 			else :
-				aim = ( -1, 0, 0 )			
+				aim = [ a * b for a, b in zip( aimvector, [-1] * 3 ) ]
 
 		pm.select( None )
 
@@ -101,7 +110,14 @@ class RigJoint( BaseJoint ) :
 
 		# unparent children, aim the joint to the average of it's children, then reparent children
 		for joint in children : joint.setParent( None )
-		pm.delete( pm.aimConstraint( [ childrenlocator, self ], mo=False, wut='object', wuo=uplocator, aim=aim ) )
+		pm.delete( pm.aimConstraint( 
+			[ childrenlocator, self ],
+			mo=False,
+			wut='object',
+			wuo=uplocator,
+			upVector=upvector,
+			aim=aim
+		) )
 		pm.makeIdentity( self, a=True, r=True )
 		for joint in children : joint.setParent( self )
 

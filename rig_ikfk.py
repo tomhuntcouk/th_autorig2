@@ -3,16 +3,14 @@ import pymel.core.nodetypes as pn
 
 from rig_basic import *
 import controls
-import utils
-
-
+import utils, settings
 
 
 class FkRig( BasicRig ) :
 	PARTNAME = 'fkRig'
 
-	def __init__( self ) :
-		super( FkRig, self ).__init__()
+	# def __init__( self ) :
+	# 	super( FkRig, self ).__init__()
 
 	def create( self, _jointchain=None ) :
 		super( FkRig, self ).create( _jointchain )
@@ -23,13 +21,20 @@ class FkRig( BasicRig ) :
 			utils.err( 'FkRig has no jointchains. Cannot create fk rig.' )
 			return False
 
+
 		for rigjoint in rigjoints :
 			control = controls.RigControl( n=rigjoint.name() )
+			control.setRotationOrder( 
+				utils.aim_axis_to_rotate_order( settings.rotationorder ),
+				False
+			)
 			control.position_to_object( rigjoint )
 			pm.orientConstraint( control, rigjoint )
 			
 			if( lastcontrol ) :
-				pm.parentConstraint( lastcontrol, control, mo=True )			
+				pm.parentConstraint( lastcontrol, control.zero_group(), mo=True )
+				# pm.pointConstraint( lastcontrol, control, mo=True )
+				# pm.orientConstraint( lastcontrol, control, mo=True )
 			lastcontrol = control
 			
 			self.add_child( control )
@@ -41,8 +46,8 @@ class FkRig( BasicRig ) :
 class IkRig( BasicRig ) :
 	PARTNAME = 'ikRig'
 
-	def __init__( self ) :
-		super( IkRig, self ).__init__()
+	# def __init__( self ) :
+	# 	super( IkRig, self ).__init__()
 
 	def create( self, _jointchain=None ) :
 		super( IkRig, self ).create( _jointchain )
@@ -118,7 +123,6 @@ class IkRig( BasicRig ) :
 			pm.parentConstraint( [ j[1], j[0] ], mo=False )
 
 		return True
-
 
 
 class IkFkBlendRig( BlendRig ) :

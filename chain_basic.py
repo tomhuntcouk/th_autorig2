@@ -93,6 +93,17 @@ class Jointchain( TreeNode ) :
 		dupjointchain.PARTNAME = dupjointchain.__class__.PARTNAME
 		return dupjointchain
 
+	def length_between( self, _startindex, _endindex ) :
+		ret = 0.00
+		axis = settings.rotationorder[0]
+		attr = 'translate' + axis.upper() 
+		for i in range( _startindex, _endindex ) :
+			rigjoint = self.rigjoints[ i ]
+			ret += rigjoint.attr( attr ).get()
+			for minorrigjoint in self.minorrigjoints[ rigjoint ] :
+				ret += minorrigjoint.attr( attr ).get()
+		return ret
+
 	def major_joints( self ) :
 		return self.rigjoints
 
