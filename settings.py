@@ -42,6 +42,7 @@ tagdict = {
 	'group'				: 'GRP',
 	'curve'				: 'CRV',
 	'blend'				: 'BLEND',
+	'squashstretch'		: 'SQUSTR',
 	'rotateaddin'		: 'RADDIN',
 	'transformaddin'	: 'TADDIN',
 	'scaleaddin'		: 'SADDIN',

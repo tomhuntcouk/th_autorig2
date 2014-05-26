@@ -41,6 +41,33 @@ class FkRig( BasicRig ) :
 
 		return True
 
+	def addinSquashStretch( self ) :
+		controlsrigjointszipped = zip( 
+			self.tree_children( 'rigControl' ),
+			self.tree_children( 'jointchain' )[0].rigjoints
+		)
+
+		for control, rigjoint in controlsrigjointszipped :
+			alljoints = [ rigjoint ] + self.tree_children( 'jointchain' )[0].minorrigjoints[ rigjoint ]
+			for joint in alljoints :
+				primaryaxis = joint.getRotationOrder()[0].upper()
+				controlscaleattr = control.attr( 'scale' + primaryaxis )			
+				controlscaleattr >> joint.attr( 'scale' + primaryaxis )
+				
+				# multdiv to create volume preservation
+				multdiv = pm.nodetypes.MultiplyDivide()
+				multdiv.rename( utils.name_from_tags( rigjoint, 'squashstretch', 'multiplydivide' ) )
+				multdiv.operation.set( 2 )
+				multdiv.input1X.set( 1 )
+				controlscaleattr >> multdiv.input2X
+				multdiv.outputX >> joint.attr( 'scale' + joint.getRotationOrder()[1].upper() )
+				multdiv.outputX >> joint.attr( 'scale' + joint.getRotationOrder()[2].upper() )
+
+				return True
+
+	def addinDistributedTwist( self ) :
+		pass
+
 
 
 class IkRig( BasicRig ) :
@@ -123,6 +150,33 @@ class IkRig( BasicRig ) :
 			pm.parentConstraint( [ j[1], j[0] ], mo=False )
 
 		return True
+
+
+	def addinSquashStretch( self ) :
+		jointchain = self.tree_children( 'jointchain' )[0]
+		control = self.tree_children( 'rigControl' )[0]
+
+		length = jointchain.length_between( 0, len( jointchain.rigjoints ) )
+		distancebetween = pm.nodetypes.DistanceBetween()
+
+		jointchain.rigjoints[0].worldMatrix >> distancebetween.inMatrix1
+		jointchain.rigjoints[0].rotatePivotTranslate >> distancebetween.point1
+		control.worldMatrix >> distancebetween.inMatrix2
+		control.rotatePivotTranslate >> distancebetween.point2
+
+		multdiv = pm.nodetypes.MultiplyDivide()
+		multdiv.rename( utils.name_from_tags( control, 'squashstretch', 'multiplydivide' ) )	
+		multdiv.operation.set( 2 )
+		
+		multdiv.input2X.set( length )
+		distancebetween.distance >> multdiv.input1X
+
+		alljoints = self.tree_children( 'jointchain' )[0].all_joints()
+		for joint in alljoints :
+			primaryaxis = joint.getRotationOrder()[0].upper()
+			multdiv.outputX >> joint.attr( 'scale' + primaryaxis )
+
+
 
 
 class IkFkBlendRig( BlendRig ) :

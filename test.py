@@ -81,15 +81,16 @@ def main() :
 
 	chain, torun, twist, stretch, shouldtidy = [None] * 5
 
-	chain = 'spine'
-	# torun = 'ik'
+	chain = 'arm'
+	# chain = 'spine'
+	torun = 'ik'
 	# torun = 'fk'
-	torun = 'spline'
+	# torun = 'spline'
 	# torun = 'blend'
 	twist = False
 	stretch = True
-	# shouldtidy = False
-	shouldtidy = True
+	shouldtidy = False
+	# shouldtidy = True
 
 	if( chain == 'arm' ) :
 		l_arm = Jointchain.from_startend( 
@@ -132,9 +133,7 @@ def main() :
 			fk_rig.add_child( fk_rig_twist )
 			fk_rig_twist.create()
 		if stretch :
-			fk_stretch = SquashStretchChainAddin()
-			fk_rig.add_child( fk_stretch )
-			fk_stretch.create()
+			fk_rig.addinSquashStretch()
 
 		fkw = pm.PyNode('leftWrist_FKJ')
 		palm = pm.PyNode('leftPalm_j')
@@ -152,9 +151,7 @@ def main() :
 			ik_rig.add_child( ik_rig_twist )
 			ik_rig_twist.create()
 		if stretch :
-			ik_stretch = SquashStretchChainAddin()
-			ik_rig.add_child( ik_stretch )
-			ik_stretch.create()
+			ik_rig.addinSquashStretch()
 		
 		ikw = pm.PyNode('leftWrist_IKJ')
 		palm = pm.PyNode('leftPalm_j')
