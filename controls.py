@@ -67,12 +67,7 @@ class BaseControl( pm.Transform, TreeNode, object ) :
 
 		control = eval( cls.__shapedict[ shape_type ] )
 		control.rename( name )
-
-		zerogroup = pm.group( n=utils.name_from_tags( control, 'zero' ), em=True, world=True )
-		sdkgroup = pm.group( n=utils.name_from_tags( control, 'sdk' ), em=True, world=True )
-
-		control.setParent( sdkgroup )
-		sdkgroup.setParent( zerogroup )
+		utils.create_zero_sdk_groups( control )
 
 		return control.name()
 

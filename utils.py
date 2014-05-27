@@ -98,6 +98,15 @@ def name_from_tags( _obj, *_tags, **kwargs ) :
 #########################################################
 
 
+def create_zero_sdk_groups( _obj ) :
+	zerogroup = pm.group( n=name_from_tags( _obj, 'zero' ), em=True, world=True )
+	sdkgroup = pm.group( n=name_from_tags( _obj, 'sdk' ), em=True, world=True )
+	zerogroup.setTransformation( _obj.getTransformation() )
+	sdkgroup.setTransformation( _obj.getTransformation() )
+	_obj.setParent( sdkgroup )
+	sdkgroup.setParent( zerogroup )
+	return sdkgroup, zerogroup
+
 def make_groups_from_path_list( _pathlist, _topgroup=None, _stopbefore=0 ) :
 	_ret = []
 	lastgroup = pm.PyNode( _topgroup )
