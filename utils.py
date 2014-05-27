@@ -69,6 +69,7 @@ def get_tag( _tag ) :
 	return settings.tagdict[ _tag ]
 
 def name_from_tags( _obj, *_tags, **kwargs ) :		
+	# maybe this should remove any tags in taglist from _obj first?
 	try : _replacelast = kwargs[ '_replacelast' ]
 	except : _replacelast = True	
 
