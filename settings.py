@@ -41,9 +41,13 @@ tagdict = {
 	'ikfkswitcher' 		: 'IKFK',
 	'group'				: 'GRP',
 	'curve'				: 'CRV',
+	'cluster'			: 'CLS',
 	'blend'				: 'BLEND',
 	'squashstretch'		: 'SQUSTR',
 	'rotateaddin'		: 'RADDIN',
 	'transformaddin'	: 'TADDIN',
 	'scaleaddin'		: 'SADDIN',
+	'start'				: '1',
+	'mid'				: '2',
+	'end'				: '3',
 }
