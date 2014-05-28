@@ -43,6 +43,7 @@ tagdict = {
 	'curve'				: 'CRV',
 	'nurbs'				: 'NRB',
 	'cluster'			: 'CLS',
+	'follicle'			: 'FOL',
 	'blend'				: 'BLEND',
 	'squashstretch'		: 'SQUSTR',
 	'rotateaddin'		: 'RADDIN',

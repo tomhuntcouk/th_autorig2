@@ -92,24 +92,9 @@ class IkRig( BasicRig ) :
 
 			utils.create_zero_sdk_groups( ribbon )
 
-			# continue
-			
-
-			# cluster start, mid and end of curve
-			# startcluster = pm.cluster( curve.cv[0:1], name=utils.name_from_tags( rigjoint1, 'start', 'cluster') )[1]
-			# midcluster = pm.cluster( curve.cv[2], name=utils.name_from_tags( rigjoint1, 'mid', 'cluster' ) )[1]
-			# endcluster = pm.cluster( curve.cv[-2:], name=utils.name_from_tags( rigjoint1, 'end', 'cluster' ) )[1]
-
 			startcluster = pm.cluster( 	ribbon.cv[0:1][0:1], name=utils.name_from_tags( rigjoint1, 'start', 'cluster') )[1]
 			midcluster = pm.cluster( 	ribbon.cv[2][0:1], name=utils.name_from_tags( rigjoint1, 'mid', 'cluster' ) )[1]
 			endcluster = pm.cluster( 	ribbon.cv[-2:][0:1], name=utils.name_from_tags( rigjoint1, 'end', 'cluster' ) )[1]
-
-			# pm.group( startcluster, midcluster, endcluster )
-
-			# pm.delete( pm.parentConstraint( [ rigjoint1, startcluster ], mo=False ) )
-			# pm.delete( pm.parentConstraint( [ rigjoint2, startcluster ], mo=False ) )
-
-			# continue
 
 			# parent clusters to respective rigjoints
 			pm.parentConstraint( [ rigjoint1, startcluster ], mo=False )
@@ -121,98 +106,40 @@ class IkRig( BasicRig ) :
 			pm.pointConstraint( [ rigjoint1, rigjoint2, zerogroup ], mo=False )
 			pm.orientConstraint( [ rigjoint1, zerogroup ], mo=False )
 
-			# continue
-
-
 			jointsToAttachToCurve = [ jointchain.rigjoints[i] ]
 			jointsToAttachToCurve += jointchain.minorrigjoints[ jointsToAttachToCurve[0] ]
 			jointsToAttachToCurve += [ jointchain.rigjoints[i+1] ]
 
-			# ik = pm.ikHandle(
-			# 	solver='ikSplineSolver',
-			# 	createCurve=False,
-			# 	curve=curve,
-			# 	startJoint=jointsToAttachToCurve[0],
-			# 	endEffector=jointsToAttachToCurve[-1]
-			# )
-
-			# continue
-
-			# locator for aim up
-			# loc = pm.spaceLocator()
-			# pm.parent( loc, rigjoint1 )
-			# loc.setRotation( (0,0,0) )
-			# loc.setTranslation( (1,2,0) )
-
-
+	
 			for rigjoint in jointsToAttachToCurve :
-
-				# u = pm.api.SafeApiPtr( 0.0 )
-				# v = pm.api.SafeApiPtr( 0.0 )
 
 				p = rigjoint.getTranslation( space='world' )
 				posi = pm.nodetypes.ClosestPointOnSurface()
 				ribbon.worldSpace >> posi.inputSurface
 				posi.inPosition.set( p )
-				u = posi.u.get()
-				v = posi.v.get()
+				u = min( max( posi.u.get(), 0.001 ), 0.999 )
+				v = min( max( posi.v.get(), 0.001 ), 0.999 )
 
 				pm.delete( posi )
 
-				follicle = pm.nodetypes.Follicle()
-				ribbon.local >> follicle.inputSurface
-				ribbon.worldMatrix[0] >> follicle.inputWorldMatrix
-				follicle.parameterU.set( u )
-				follicle.parameterV.set( v )
-
-				# print closestPoint
-
-				# # 	closestpointoncurve node - get closest param
-				# closestPoint = curve.closestPoint( rigjoint.getTranslation( space='world' ), space='world' )
-				# closestParam = curve.getParamAtPoint( closestPoint, space='world' )
-
-				# # 	curveInfoNode - get world pos of closest param
-				# curveInfoNode = pm.nodetypes.PointOnCurveInfo()
-				# curve.getShape().worldSpace >> curveInfoNode.inputCurve
-				# curveInfoNode.parameter.set( closestParam )
-
-				# #	decompose then recompose matrix to attach joint to curve
+				follicleshape = pm.nodetypes.Follicle()
+				ribbon.local >> follicleshape.inputSurface
+				ribbon.worldMatrix[0] >> follicleshape.inputWorldMatrix
+				follicleshape.parameterU.set( u )
+				follicleshape.parameterV.set( v )
 				
-				# null = pm.group( empty=True )
-				# curveInfoNode.position >> null.translate
-				# pm.tangentConstraint(
-				# 	[ curve, null ],
-				# 	worldUpType='objectrotation',
-				# 	worldUpObject=loc
-				# )
+				follicle = follicleshape.getParent()
+				follicle.rename( utils.name_from_tags( rigjoint, 'follicle' ) )
+				follicleshape.rename( follicle.name() + 'Shape' )
 
+				follicleshape.outRotate >> follicle.rotate
+				follicleshape.outTranslate >> follicle.translate
 
+				# remove any constraints already on the joint
+				pm.delete( rigjoint.getChildren( type='constraint' ) )
 
-
-				# pm.pointConstraint( [ null, rigjoint ], mo=False )
-				# pm.orientConstraint( [ null, rigjoint ], mo=False )
-
-
-
-
-				# # some kind of normal constraint to create twist
-
-				# tc = pm.tangentConstraint( [ curve, rigjoint ] )
-				# pm.orientConstraint( [ null, rigjoint ], mo=False )
-
-				# cp1 = pm.nodetypes.VectorProduct()
-				# cp1.operation.set( 2 )
-				# cp2 = pm.nodetypes.VectorProduct()
-				# cp2.operation.set( 2 )
-				# fbfm = pm.nodetypes.FourByFourMatrix()
-
-				# curveInfoNode.tangent >> cp1.input1
-				# curveInfoNode.tangent >> cp2.input1
-				# cp1.output >> cp2.input2
-
-				# cp1.outputX >> fbfm.
-
-
+				pm.parentConstraint( [ follicle, rigjoint ], mo=False )
+				
 
 		return True
 		
