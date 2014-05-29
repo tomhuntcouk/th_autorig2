@@ -4,7 +4,7 @@ debug = True
 should_error = False
 
 name_string_delimeter = '_'
-attrname = 'th_autorig_nodecheck'
+attrname = 'nodecheck'
 
 rotationorder = 'XYZ'
 

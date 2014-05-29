@@ -2,7 +2,7 @@ import pymel.all as pm
 import copy
 
 from virtual import BaseVirtual
-# from skeleton import 
+from skeleton2 import RigJoint
 
 import settings, utils
 
@@ -30,11 +30,33 @@ class Jointchain( BaseVirtual, pm.Transform ) :
 	@classmethod
 	def _postCreateVirtual( cls, node, **kwargs ) :
 		super( Jointchain, cls )._postCreateVirtual( node, **kwargs )
-		node = pm.PyNode( node )
-		joints = Jointchain.get_chain( kwargs['startJoint'], kwargs['endJoint'] )
+		self = pm.PyNode( node )
+
+		# get the joints in the chain...
+		jointlist = Jointchain.get_chain( kwargs['startJoint'], kwargs['endJoint'] )
+		# ensure they're in a good state
+		jointlist = cls.clean_jointlist( jointlist )
+		# convert to rigjoints
+		if( jointlist ) :
+			rigjoints = []
+			minorrigjoints = {}
+			for joint in jointlist :
+				if( RigJoint.convert( joint ) ) :
+					rigjoint = pm.PyNode( joint )
+					rigjoints.append( rigjoint )
+					minorrigjoints[ rigjoint ] = []
 		
-		node.set( 'rigjoints', joints )
-	
+		self.set( 'rigjoints', rigjoints )
+		self.set( 'minorrigjoints', minorrigjoints )
+		
+
+
+
+
+
+
+
+
 
 
 

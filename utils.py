@@ -1,6 +1,6 @@
 import pymel.all as pm
 
-import os
+import os, sys
 import inspect
 
 import settings
@@ -8,7 +8,7 @@ import settings
 __dataattrdict = {
 	'str'	: 'dt="string"',
 	'float' : 'at="float"',
-	'list'	: 'dt=stringArrayCompound'
+	'list'	: 'dt="stringArray"'
 }
 
 
@@ -43,7 +43,8 @@ def wrn( _message ) :
 def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :	
 	if( not _obj.hasAttr( _attr ) ) :
 		t = type( _value ).__name__
-		eval( '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable ) )
+		cmd = '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable )
+		eval( cmd )
 
 	attr = pm.PyNode( '%s.%s' % ( _obj, _attr ) )	
 
