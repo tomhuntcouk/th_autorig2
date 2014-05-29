@@ -40,21 +40,21 @@ def wrn( _message ) :
 #########################################################
 
 
-def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :	
-	if( not _obj.hasAttr( _attr ) ) :
-		t = type( _value ).__name__
-		cmd = '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable )
-		eval( cmd )
+# def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :	
+# 	if( not _obj.hasAttr( _attr ) ) :
+# 		t = type( _value ).__name__
+# 		cmd = '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable )
+# 		eval( cmd )
 
-	attr = pm.PyNode( '%s.%s' % ( _obj, _attr ) )	
+# 	attr = pm.PyNode( '%s.%s' % ( _obj, _attr ) )	
 
-	try :
-		_obj.setAttr( _attr, _value )
-		attr.setLocked( _locked )
-		return attr
-	except AttributeError :
-		err( 'value of %s cannot be applied to %s attr %s.%s' % ( _value, _obj.getAttr( _attr, type=True ), _obj, _attr ) )
-		return False
+# 	try :
+# 		_obj.setAttr( _attr, _value )
+# 		attr.setLocked( _locked )
+# 		return attr
+# 	except AttributeError :
+# 		err( 'value of %s cannot be applied to %s attr %s.%s' % ( _value, _obj.getAttr( _attr, type=True ), _obj, _attr ) )
+# 		return False
 
 def renumber_from_name( _name, _number ) :
 	d = settings.name_string_delimeter

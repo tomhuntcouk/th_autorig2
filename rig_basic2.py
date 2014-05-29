@@ -27,8 +27,8 @@ class BindRig( BaseRig ) :
 		node.set( 'masterjointchain', '' )
 
 
-	def create( self, _jointchain, _divisionstuple=(0,0) ) :
-		self.set( 'masterjointchain', _jointchain.name() )
+	def create( self, jointchain, divisionstuple=(0,0) ) :
+		self.set( 'masterjointchain', jointchain )
 		self.get( 'masterjointchain' ).PARTNAME = 'masterjointchain'
 	
-
+		self.get( 'masterjointchain' ).duplicate_chain()

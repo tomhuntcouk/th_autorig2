@@ -15,7 +15,7 @@ def main() :
 	pm.mel.eval( l )
 
 
-	# br = BindRig( name='left_arm_rig' )
+	br = BindRig( name='left_arm_rig' )
 	jc = Jointchain( 
 		name='left_arm_chain',
 		startJoint=pm.PyNode( 'leftUpperArm_1_j' ),
@@ -23,4 +23,4 @@ def main() :
 	)
 
 
-	# jc.create()
+	br.create( jc, ( 2, 3 ) )

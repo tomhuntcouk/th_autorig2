@@ -33,7 +33,10 @@ class BaseVirtual() :
 	def convert( cls, obj ) :
 		pynodetype = cls.get_pynodetype()
 		if( type( obj ) == pynodetype ) :
-			return utils.add_set_attr( obj, settings.attrname, cls.PARTNAME, _keyable=False, _locked=True )
+			# return utils.add_set_attr( obj, settings.attrname, cls.PARTNAME, _keyable=False, _locked=True )
+			obj.addAttr( settings.attrname, dt='string' )
+			obj.setAttr( settings.attrname, cls.PARTNAME )
+			return True
 		else :		
 			utils.err( '%s is not a %s' % ( obj.name(), pynodetype ) )
 			return False
@@ -78,14 +81,16 @@ class BaseVirtual() :
 	def _postCreateVirtual( cls, node, **kwargs ) :
 		# print '-----------', '_postCreateVirtual', node
 		node = pm.PyNode( node )
-		utils.add_set_attr( node, settings.attrname, cls.PARTNAME )
+		# utils.add_set_attr( node, settings.attrname, cls.PARTNAME )
+		node.addAttr( settings.attrname, dt='string' )
+		node.setAttr( settings.attrname, cls.PARTNAME )
 
 	def is_attribute( self, _attr ) :
 		return self.hasAttr( _attr )
 
 	def set( self, _attr, _value ) :
 		if( not self.hasAttr( _attr ) ) :
-			t = type( _value ).__name__		
+			# t = type( _value ).__name__		
 			# cmd = '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable )
 			# eval( cmd )
 			# let's try pickling everything into string attrs...

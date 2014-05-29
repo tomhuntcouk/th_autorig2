@@ -53,6 +53,11 @@ class Jointchain( BaseVirtual, pm.Transform ) :
 
 
 
+	def duplicate_chain( self, *tags, **kwargs ) :
+		pass
+
+
+
 
 
 
