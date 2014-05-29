@@ -1,5 +1,4 @@
 import pymel.all as pm
-import maya.cmds as mc
 
 from tree import TreeNode
 
@@ -19,7 +18,7 @@ class BaseControl( pm.Transform, TreeNode, object ) :
 
 	@classmethod
 	def convert_to_virtual( cls, _transform ) :
-		if( type( _transform ) == pm.Tranform ) :
+		if( type( _transform ) == pm.Transform ) :
 			return utils.add_set_attr( _transform, settings.attrname, cls.PARTNAME, _keyable=False, _locked=True )
 		else :		
 			utils.err( '%s is not a transform' % ( _transform.name() ) )	

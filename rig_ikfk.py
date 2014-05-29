@@ -1,5 +1,4 @@
 import pymel.all as pm
-import pymel.core.nodetypes as pn
 
 from rig_basic import *
 import controls
@@ -90,7 +89,7 @@ class IkRig( BasicRig ) :
 			pm.delete( ribbon, ch=True )
 			pm.delete( curve )
 
-			utils.create_zero_sdk_groups( ribbon )
+			utils.create_zero_sdk_groups( ribbon, _replacelast=False )
 
 			startcluster = pm.cluster( 	ribbon.cv[0:1][0:1], name=utils.name_from_tags( rigjoint1, 'start', 'cluster') )[1]
 			midcluster = pm.cluster( 	ribbon.cv[2][0:1], name=utils.name_from_tags( rigjoint1, 'mid', 'cluster' ) )[1]
@@ -101,7 +100,7 @@ class IkRig( BasicRig ) :
 			pm.parentConstraint( [ rigjoint2, endcluster ], mo=False )
 
 			# group then point/parent constrain middle cluster to end clusters
-			sdkgroup, zerogroup = utils.create_zero_sdk_groups( midcluster )
+			sdkgroup, zerogroup = utils.create_zero_sdk_groups( midcluster, _replacelast=False )
 			zerogroup.setRotation( rigjoint1.getRotation( space='world' ), space='world' )
 			pm.pointConstraint( [ rigjoint1, rigjoint2, zerogroup ], mo=False )
 			pm.orientConstraint( [ rigjoint1, zerogroup ], mo=False )
@@ -138,7 +137,7 @@ class IkRig( BasicRig ) :
 				# remove any constraints already on the joint
 				pm.delete( rigjoint.getChildren( type='constraint' ) )
 
-				pm.parentConstraint( [ follicle, rigjoint ], mo=False )
+				pm.parentConstraint( [ follicle, rigjoint ], mo=True )
 				
 
 		return True

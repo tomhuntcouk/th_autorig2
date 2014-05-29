@@ -77,7 +77,6 @@ def main() :
 	# l_arm_rig = BasicRig( l_arm )
 	# print l_arm.tree_parent()
 
-	
 
 	chain, torun, twist, stretch, shouldtidy = [None] * 5
 

@@ -21,11 +21,6 @@ tidydict = {
 class BaseRig( TreeNode ) :
 	PARTNAME = 'bindRig'
 
-	# def __init__( self ) :
-	# 	super( BaseRig, self ).__init__()
-	# 	self.mainjointchain = None
-
-
 	def tidy( self ) :
 
 		# we will need to fully parent the bind joints together

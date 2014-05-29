@@ -98,9 +98,9 @@ def name_from_tags( _obj, *_tags, **kwargs ) :
 #########################################################
 
 
-def create_zero_sdk_groups( _obj ) :
-	zerogroup = pm.group( n=name_from_tags( _obj, 'zero' ), em=True, world=True )
-	sdkgroup = pm.group( n=name_from_tags( _obj, 'sdk' ), em=True, world=True )
+def create_zero_sdk_groups( _obj, _replacelast=True ) :
+	zerogroup = pm.group( n=name_from_tags( _obj, 'zero', _replacelast=_replacelast ), em=True, world=True )
+	sdkgroup = pm.group( n=name_from_tags( _obj, 'sdk', _replacelast=_replacelast ), em=True, world=True )
 	zerogroup.setTransformation( _obj.getTransformation() )
 	sdkgroup.setTransformation( _obj.getTransformation() )
 	_obj.setParent( sdkgroup )
