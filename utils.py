@@ -8,6 +8,7 @@ import settings
 __dataattrdict = {
 	'str'	: 'dt="string"',
 	'float' : 'at="float"',
+	'list'	: 'dt=stringArrayCompound'
 }
 
 

@@ -93,7 +93,7 @@ def main() :
 
 	if( chain == 'arm' ) :
 		l_arm = Jointchain.from_startend( 
-			pm.PyNode( 'leftUpperArm_1_j' ), 
+			pm.PyNode( 'leftUpperArm_1_j' ),
 			pm.PyNode( 'leftWrist_j' )
 		)
 

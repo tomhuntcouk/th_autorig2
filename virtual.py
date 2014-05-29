@@ -7,11 +7,21 @@ class BaseVirtual() :
 	PARTNAME = 'baseVirtual'
 
 	@classmethod
+	def __recurse_bases( cls, _base ) :
+		bases = list( cls.__bases__ )
+		for base in bases :
+			bases.extend( cls.__recurse_bases( base ) )
+		return bases
+			
+
+	@classmethod
 	def get_pynodetype( cls ) :
-		for base in cls.__bases__ :
+		for base in utils.get_full_class_inheritance( cls ) :
 			if( base.__module__ == 'pymel.core.nodetypes' ) :
 				return base
 		return None
+		
+
 
 	@classmethod
 	def convert( cls, obj ) :
@@ -50,14 +60,36 @@ class BaseVirtual() :
 	@classmethod
 	def _createVirtual( cls, **kwargs ) :
 		# print '-----------', 'createVirtual'
-		node = cls.get_pynodetype()( **kwargs )
-		return node.name()
+		pynodetype = cls.get_pynodetype()
+		if( pynodetype ) : 
+			node = pynodetype( **kwargs )
+			return node.name()
+		else : 
+			utils.err( 'No PyNode found in bases of %s' % ( cls.__name__ ) )
+			return False
 
 	@classmethod
 	def _postCreateVirtual( cls, node, **kwargs ) :
 		# print '-----------', '_postCreateVirtual', node
 		node = pm.PyNode( node )
 		utils.add_set_attr( node, settings.attrname, cls.PARTNAME )
+
+	def set( self, _name, _value ) :		
+		self.__dict__[ _name ] = _value
+		try :
+			utils.add_set_attr( self, _name, _value )
+		except :
+			pass
+
+	def get( self, _name ) :
+		ret = None
+		try :
+			ret = self.getAttr( _name )
+		except :
+			ret = self.getattr( _name )
+
+		try : return pm.PyNode( ret )
+		except : return ret
 
 
 
