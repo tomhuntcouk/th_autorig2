@@ -4,7 +4,7 @@ debug = True
 should_error = False
 
 name_string_delimeter = '_'
-attrname = 'th_autorig_nodecheck'
+attrname = 'nodecheck'
 
 rotationorder = 'XYZ'
 
@@ -41,8 +41,15 @@ tagdict = {
 	'ikfkswitcher' 		: 'IKFK',
 	'group'				: 'GRP',
 	'curve'				: 'CRV',
+	'nurbs'				: 'NRB',
+	'cluster'			: 'CLS',
+	'follicle'			: 'FOL',
 	'blend'				: 'BLEND',
+	'squashstretch'		: 'SQUSTR',
 	'rotateaddin'		: 'RADDIN',
 	'transformaddin'	: 'TADDIN',
 	'scaleaddin'		: 'SADDIN',
+	'start'				: 'START',
+	'mid'				: 'MIDDLE',
+	'end'				: 'END',
 }

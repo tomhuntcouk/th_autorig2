@@ -1,7 +1,8 @@
 import pymel.all as pm
 
-import utils
-import settings
+from tree import TreeNode
+import utils, settings
+
 
 """
 to fix __apicls__ error i had to add __apicls__ to validSpecialAttrs in
@@ -19,7 +20,7 @@ clone the PyMel Github repo to resolve the problem
 # print pm.factories.VirtualClassManager.register
 
 
-class BaseJoint( pm.Joint, object ) :
+class BaseJoint( pm.Joint, TreeNode ) :
 	PARTNAME = 'BaseJoint'
 
 	@classmethod
@@ -27,7 +28,7 @@ class BaseJoint( pm.Joint, object ) :
 		if( type( _joint ) == pm.Joint ) :
 			return utils.add_set_attr( _joint, settings.attrname, cls.PARTNAME, _keyable=False, _locked=True )
 		else :		
-			utils.err( '%s is not a joint' % ( _joint.name() ) )	
+			utils.err( '%s is not a joint' % ( _joint.name() ) )
 			return False
 
 	@classmethod

@@ -31,6 +31,11 @@ class TreeNode( object ) :
 	# def __str__( self ) :
 	# 	return unicode( self ).encode( 'utf-8' )
 
+	def __setattr__( self, _name, _value ) :		
+		self.__dict__[ _name ] = _value
+		# create maya attributes if possible - could this work?
+		# print type( self )
+
 	def __init__( self, _parent=None, _value=None ) :
 		self.__value = _value
 		if not self.__value : self.__value = self

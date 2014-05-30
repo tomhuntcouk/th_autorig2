@@ -1,6 +1,6 @@
 import pymel.all as pm
 
-import os
+import os, sys
 import inspect
 
 import settings
@@ -8,6 +8,7 @@ import settings
 __dataattrdict = {
 	'str'	: 'dt="string"',
 	'float' : 'at="float"',
+	'list'	: 'dt="stringArray"'
 }
 
 
@@ -39,20 +40,21 @@ def wrn( _message ) :
 #########################################################
 
 
-def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :	
-	if( not _obj.hasAttr( _attr ) ) :
-		t = type( _value ).__name__
-		eval( '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable ) )
+# def add_set_attr( _obj, _attr, _value, _locked=False, _keyable=True ) :	
+# 	if( not _obj.hasAttr( _attr ) ) :
+# 		t = type( _value ).__name__
+# 		cmd = '_obj.addAttr( _attr, %s, k=%s )' % ( __dataattrdict[ t ], _keyable )
+# 		eval( cmd )
 
-	attr = pm.PyNode( '%s.%s' % ( _obj, _attr ) )	
+# 	attr = pm.PyNode( '%s.%s' % ( _obj, _attr ) )	
 
-	try :
-		_obj.setAttr( _attr, _value )
-		attr.setLocked( _locked )
-		return attr
-	except AttributeError :
-		err( 'value of %s cannot be applied to %s attr %s.%s' % ( _value, _obj.getAttr( _attr, type=True ), _obj, _attr ) )
-		return False
+# 	try :
+# 		_obj.setAttr( _attr, _value )
+# 		attr.setLocked( _locked )
+# 		return attr
+# 	except AttributeError :
+# 		err( 'value of %s cannot be applied to %s attr %s.%s' % ( _value, _obj.getAttr( _attr, type=True ), _obj, _attr ) )
+# 		return False
 
 def renumber_from_name( _name, _number ) :
 	d = settings.name_string_delimeter
@@ -69,6 +71,7 @@ def get_tag( _tag ) :
 	return settings.tagdict[ _tag ]
 
 def name_from_tags( _obj, *_tags, **kwargs ) :		
+	# maybe this should remove any tags in taglist from _obj first?
 	try : _replacelast = kwargs[ '_replacelast' ]
 	except : _replacelast = True	
 
@@ -96,6 +99,15 @@ def name_from_tags( _obj, *_tags, **kwargs ) :
 # general
 #########################################################
 
+
+def create_zero_sdk_groups( _obj, _replacelast=True ) :
+	zerogroup = pm.group( n=name_from_tags( _obj, 'zero', _replacelast=_replacelast ), em=True, world=True )
+	sdkgroup = pm.group( n=name_from_tags( _obj, 'sdk', _replacelast=_replacelast ), em=True, world=True )
+	zerogroup.setTransformation( _obj.getTransformation() )
+	sdkgroup.setTransformation( _obj.getTransformation() )
+	_obj.setParent( sdkgroup )
+	sdkgroup.setParent( zerogroup )
+	return sdkgroup, zerogroup
 
 def make_groups_from_path_list( _pathlist, _topgroup=None, _stopbefore=0 ) :
 	_ret = []
