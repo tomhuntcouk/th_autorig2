@@ -21,12 +21,16 @@ staticcontrols = {
 
 tagdict = {
 	None				: '',
-	'fkRig'				: 'FKJ',
-	'ikRig'				: 'IKJ',
-	'spline'			: 'S',
-	'blendRig'			: 'BJ',
-	'splineRig'			: 'SIKJ',
-	'control'			: 'CNTRL',	
+	# autorig types
+	'FkRig'				: 'FKJ',
+	'IkRig'				: 'IKJ',
+	'Spline'			: 'S',
+	'BlendRig'			: 'BJ',
+	'BaseRig'			: 'BJ',
+	'SplineRig'			: 'SIKJ',
+	'Control'			: 'CNTRL',	
+
+	# maya types
 	'ikhandle'			: 'HND',
 	'ikeffector'		: 'EFF',
 	'animcurveUL'		: 'ACUL',
@@ -44,6 +48,8 @@ tagdict = {
 	'nurbs'				: 'NRB',
 	'cluster'			: 'CLS',
 	'follicle'			: 'FOL',
+	
+	# other
 	'blend'				: 'BLEND',
 	'squashstretch'		: 'SQUSTR',
 	'rotateaddin'		: 'RADDIN',

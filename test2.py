@@ -1,11 +1,12 @@
 import pymel.all as pm
 
-from rig_basic2 import BindRig
+from rig_basic2 import BindRig, BasicRig
 from chain_basic2 import Jointchain
 from skeleton2 import RigJoint
 
 # probably put this in __init_.py
 pm.factories.registerVirtualClass( BindRig, nameRequired=False )
+pm.factories.registerVirtualClass( BasicRig, nameRequired=False )
 pm.factories.registerVirtualClass( Jointchain, nameRequired=False )
 pm.factories.registerVirtualClass( RigJoint, nameRequired=False )
 
@@ -19,8 +20,13 @@ def main() :
 	jc = Jointchain( 
 		name='left_arm_chain',
 		startJoint=pm.PyNode( 'leftUpperArm_1_j' ),
-		endJoint=pm.PyNode( 'leftWrist_j' )
+		endJoint=pm.PyNode( 'leftWrist_j' ),
+		masterJointChain=True
 	)
 
+	br.add_child( jc )
+	br.create( ( 3, 3 ) )
 
-	br.create( jc, ( 2, 3 ) )
+	basic = BasicRig()
+	br.add_child( basic )
+	basic.create()

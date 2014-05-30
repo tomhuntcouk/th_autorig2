@@ -17,13 +17,15 @@ class Jointchain( BaseVirtual, pm.Transform ) :
 		# ensure we have start and end joints to get teh entire chain from and pass to post
 		startJoint = kwargs.pop( 'startJoint' )
 		endJoint = kwargs.pop( 'endJoint' )
+		masterJointChain = kwargs.pop( 'masterJointChain' )
 		if( not startJoint or not endJoint ) :
 			utils.err( 'You need to specify startJoint and endJoint to create a Jointchain' )
 			return False
 		else :
 			pkwargs = { 
 				'startJoint' : startJoint,
-				'endJoint' : endJoint
+				'endJoint' : endJoint,
+				'masterJointChain' : masterJointChain
 			}
 			return kwargs, pkwargs
 
@@ -48,15 +50,42 @@ class Jointchain( BaseVirtual, pm.Transform ) :
 		
 		self.set( 'rigjoints', rigjoints )
 		self.set( 'minorrigjoints', minorrigjoints )
-		
+		# if this is not a masterJointChain, we should tidy it's joints under it
+		if( not kwargs[ 'masterJointChain' ] ) :
+			self.get( 'rigjoints' )[0].setParent( self )
 
 
+	def orient( self, orientchildless=True ) :
+		for rigjoint in self.get( 'rigjoints' ) :
+			rigjoint.orient( orientchildless )
 
+	def split( self, jointid, numsplits ) :
+		rigjoint = self.get( 'rigjoints' )[ jointid ]
+		minorrigjoints = self.get( 'minorrigjoints' )
+		minorrigjoints[ rigjoint ] = rigjoint.split( numsplits )
+		self.set( 'minorrigjoints', minorrigjoints )
 
-	def duplicate_chain( self, *tags, **kwargs ) :
-		pass
+	def duplicate( self, *tags, **kwargs ) :
+		# we will manually recreate the jointchain to ensure instance attributes are
+		# properly created
+		# we will duplicate each joint individually to ensure it is created correctly
+		try : simple = kwargs[ 'simple' ]
+		except : simple = False
 
+		# first duplicate just the major rigjoints
+		lastduplicaterigjoint = None
+		for rigjoint in self.get('rigjoints' ) :
+			# duplicate rigjoint with new name and parent to last joint
+			duplicaterigjointname = utils.name_from_tags( rigjoint, *tags )
+			duplicaterigjoint = rigjoint.duplicate( simple=True, name=duplicaterigjointname )
+			duplicaterigjoint.setParent( lastduplicaterigjoint )
+			lastduplicaterigjoint = duplicaterigjoint
 
+			# now duplicate any minorjoints if needed
+			if( not simple ) :
+				duplicateminorrigjoints = {}
+				for minorrigjoint in self.get( 'minorrigjoints' )[ rigjoint ] :
+					
 
 
 

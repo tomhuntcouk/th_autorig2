@@ -27,8 +27,23 @@ class BindRig( BaseRig ) :
 		node.set( 'masterjointchain', '' )
 
 
-	def create( self, jointchain, divisionstuple=(0,0) ) :
+	def create( self, divisionstuple=( 0, 0 ) ) :
+		jointchain = self.children( rigtype='Jointchain' )[0]
 		self.set( 'masterjointchain', jointchain )
 		self.get( 'masterjointchain' ).PARTNAME = 'masterjointchain'
-	
-		self.get( 'masterjointchain' ).duplicate_chain()
+		
+		# ready masterjointchain for having subrigs created from it
+		self.get( 'masterjointchain' ).orient()
+		for i, numdivisions in enumerate( divisionstuple ) :
+			self.get( 'masterjointchain' ).split( i, numdivisions )
+
+
+class BasicRig( BaseRig ) :
+
+	def create( self, jointchain=None ) :
+		# get masterjointchain and copy it if no _jointchain is specified
+		if( not jointchain ) :
+			jointchain = self.root().get( 'masterjointchain' ).duplicate( self.PARTNAME )
+		# self.add_child( jointchain )
+		# pm.select( jointchain )
+			

@@ -171,6 +171,7 @@ def is_subclass( _obj, _class ) :
 
 
 def aim_axis_to_vectors( _xyz ) :
+	# [0] = aimvector, [1] = upvector
 	rotationorderdict = {
 		'XYZ' : ( ( 1, 0, 0 ), ( 0, 1, 0 ) ),
 		'YZX' : ( ( 0, 1, 0 ), ( 0, 0, 1 ) ),

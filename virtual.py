@@ -101,7 +101,16 @@ class BaseVirtual() :
 	def get( self, _attr ) :
 		return pickle.loads( str( self.getAttr( _attr ) ) )
 
+	def add_child( self, child ) :
+		child.setParent( self )
 
+	def children( self, rigtype=None ) :
+		children = self.getChildren()
+		if( rigtype ) :
+			for i, child in enumerate( children ) :
+				if type( child ).__name__ != rigtype :
+					children.pop( i )
+		return children
 
 	# def set( self, _attr, _value ) :
 	# 	# use this to set local variables
